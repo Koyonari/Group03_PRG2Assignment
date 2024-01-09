@@ -1,41 +1,39 @@
-﻿using System.Linq.Expressions;
-
-namespace ICTreatsSystem
+﻿namespace ICTreatsSystem
 {
     class PointCard
     {
-        public int points { get; set; } = 0;
-        public int punchCard { get; set; } = 0;
-        public string tier { get; set; } = "Ordinary";
+        public int Points { get; set; } = 0;
+        public int PunchCard { get; set; } = 0;
+        public string Tier { get; set; } = "Ordinary";
 
         public PointCard() { }
 
         public PointCard(int input_points, int input_punchCard)
         {
-            points = input_points;
-            punchCard = input_punchCard;
+            Points = input_points;
+            PunchCard = input_punchCard;
         }
 
         void AddPoints(int add_points)
         {
-            points += add_points;
-            if (tier == "Ordinary")
+            Points += add_points;
+            if (Tier == "Ordinary")
             {
-                if (points >= 150) tier = "Gold";
-                else if (points >= 50) tier = "Silver";
+                if (Points >= 150) Tier = "Gold";
+                else if (Points >= 50) Tier = "Silver";
             }
-            else if (tier == "Silver")
+            else if (Tier == "Silver")
             {
-                if (points >= 100) tier = "Gold";
+                if (Points >= 100) Tier = "Gold";
             }
         }
 
         void RedeemPoints(int use_points)//Not Done
         {
-            if (points - use_points >= 0 && (tier == "Silver" || tier == "Gold"))
+            if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
             {
                 double cost_offset = use_points * 0.02;
-                if (tier == "Gold")
+                if (Tier == "Gold")
                 {
 
                 }
@@ -44,16 +42,16 @@ namespace ICTreatsSystem
 
         void punch()//Not Done
         {
-            punchCard++;
-            if (punchCard == 10)
+            PunchCard++;
+            if (PunchCard == 10)
             {
-                punchCard = 0;
+                PunchCard = 0;
             }
         }
 
         public override string ToString()
         {
-            return $"Points: {points} PunchCard: {punchCard} Tier: {tier}";
+            return $"Points: {Points} PunchCard: {PunchCard} Tier: {Tier}";
         }
     }
 }

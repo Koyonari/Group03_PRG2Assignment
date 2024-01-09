@@ -13,7 +13,7 @@ void ExtractCustomer(string filename) //Reads File, Creates objects
         if (i != 0)
         {
             Customer new_customer = new Customer(customer_details[0], Convert.ToInt32(customer_details[1]), Convert.ToDateTime(customer_details[2])); //Creates Customer Object
-            customerDict.Add(new_customer.memberId, new_customer); //Adds Customer Object to Dictionary
+            customerDict.Add(new_customer.MemberId, new_customer); //Adds Customer Object to Dictionary
         }
     }
 }
