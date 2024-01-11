@@ -2,8 +2,8 @@
 
 string customerFile = "customers.csv";
 Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>(); //Create a Dictionary to store Customer Objects
-Queue<Customer> gold_queue = new Queue<Customer>();
-Queue<Customer> reg_queue = new Queue<Customer>();
+Queue<Order> gold_queue = new Queue<Order>();
+Queue<Order> regular_queue = new Queue<Order>();
 
 void ExtractCustomer(string filename) //Reads File, Creates objects
 {
@@ -14,8 +14,10 @@ void ExtractCustomer(string filename) //Reads File, Creates objects
         string[] customer_details = customer_file[i].Split(","); //Nested Array
         if (i != 0)
         {
-            Customer new_customer = new Customer(customer_details[0], Convert.ToInt32(customer_details[1]), Convert.ToDateTime(customer_details[2])); //Creates Customer Object
-            customerDict.Add(new_customer.MemberId, new_customer); //Adds Customer Object to Dictionary
+            Customer customer = new Customer(customer_details[0], Convert.ToInt32(customer_details[1]), Convert.ToDateTime(customer_details[2])); //Creates Customer Object
+
+            customer.Rewards = new PointCard();
+            customerDict.Add(customer.MemberId, customer); //Adds Customer Object to Dictionary
         }
     }
 }
@@ -29,12 +31,18 @@ void ListAllCustomers(Dictionary<int, Customer> customerDict)
     }
 }
 
-void ListAllCurrentOrders(Dictionary<int, Customer> customerDict)
+void ListAllCurrentOrders(Dictionary<int, Customer> customerDict, Queue<Order> gold_queue, Queue<Order> regular_queue)
 {
-    foreach (KeyValuePair<int, Customer> kvp in customerDict)
+    Console.WriteLine("Gold Queue:");
+    foreach (Order i in gold_queue)
     {
-        kvp.Value.MakeOrder();
-        Console.WriteLine(kvp.Value.CurrentOrder);
+        Console.WriteLine(i);
+    }
+
+    Console.WriteLine("Regular Queue:");
+    foreach (Order i in regular_queue)
+    {
+        Console.WriteLine(i);
     }
 }
 
@@ -48,9 +56,8 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
     DateTime dob = Convert.ToDateTime(Console.ReadLine());
 
     Customer customer = new Customer(name, id, dob);
-    PointCard pointcard = new PointCard();
 
-    customer.Rewards = pointcard;
+    customer.Rewards = new PointCard();
     customerDict.Add(customer.MemberId, customer);
 
     string updatefile = $"{customer.Name},{Convert.ToInt32(customer.MemberId)},{customer.Dob.ToString("dd/MM/yyyy")}";
@@ -203,15 +210,36 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
     int opt = Convert.ToInt32(Console.ReadLine());
 
     //Create order object
-    Order new_order = new Order(opt, DateTime.Now);
+    Order order = new Order(opt, DateTime.Now);
 
-    //Link order tp current order
-    customerDict[opt].CurrentOrder = new_order;
+    while (true)
+    {
+        //Create ice cream
+        IceCream iceCream = CreateIceCream();
+        order.AddIceCream(iceCream);
 
-    //Create ice cream
-    IceCream iceCream = CreateIceCream();
+        //Add order tp current order
+        customerDict[opt].CurrentOrder = order;
 
-    Console.WriteLine(iceCream);
+        Console.WriteLine("Ice Cream added to order.");
+
+        Console.Write("Add another ice cream? y/n : ");
+        string cont_o = Console.ReadLine();
+
+        if (cont_o == "n")
+        {
+            break;
+        }
+    }
+
+    //Add order to order history
+    customerDict[opt].OrderHistory.Add(order);
+
+    //Queue orders
+    if (customerDict[opt].Rewards.Tier == "Gold") gold_queue.Enqueue(order);
+    else regular_queue.Enqueue(order);
+
+    Console.WriteLine("Order successfully made.");
 }
 
 ExtractCustomer(customerFile);
@@ -238,6 +266,7 @@ while (true)
             ListAllCustomers(customerDict);
             break;
         case 2:
+            ListAllCurrentOrders(customerDict, gold_queue, regular_queue);
             break;
         case 3:
             RegisterNewCustomer(customerDict, customerFile);
