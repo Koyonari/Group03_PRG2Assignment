@@ -80,6 +80,48 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
     }
 }
 
+//Feature 4
+void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
+{
+    //Retrieve the selected customer
+    ListAllCustomers(customerDict);
+
+    Console.Write("\nEnter customer account Id : ");
+    int opt = Convert.ToInt32(Console.ReadLine());
+
+    //Create order object
+    Order order = new Order(opt, DateTime.Now);
+
+    while (true)
+    {
+        //Create ice cream
+        IceCream iceCream = CreateIceCream();
+        order.AddIceCream(iceCream);
+
+        //Add order tp current order
+        customerDict[opt].CurrentOrder = order;
+
+        Console.WriteLine("\nIce Cream added to order.");
+
+        Console.Write("\nAdd another ice cream? y/n : ");
+        string cont_o = Console.ReadLine();
+
+        if (cont_o == "n")
+        {
+            break;
+        }
+    }
+
+    //Add order to order history
+    customerDict[opt].OrderHistory.Add(order);
+
+    //Queue orders
+    if (customerDict[opt].Rewards.Tier == "Gold") gold_queue.Enqueue(order);
+    else regular_queue.Enqueue(order);
+
+    Console.WriteLine("Order successfully made.\n");
+}
+
 IceCream CreateIceCream()
 {
     //Create ice cream
@@ -113,7 +155,7 @@ IceCream CreateIceCream()
     {
         //print waffle flavour options menu
         Console.WriteLine("\nAvailable waffle flavours: ");
-        for (int e = 0; e < o_menu.Length; e++)
+        for (int e = 0; e < w_menu.Length; e++)
         {
             Console.WriteLine($"[{e + 1}] {w_menu[e]}");
         }
@@ -129,13 +171,13 @@ IceCream CreateIceCream()
     //Flavours
     string[] f_menu = { "Vanilla", "Chocolate", "Strawberry", "Durian", "Ube", "Sea salt" };
     List<Flavour> f_list = new List<Flavour>();
-    int quantity = 1;
 
     Console.Write("\n-Flavours-");
 
     for (int i = 0; i < scoops;)
     {
         bool premium = false;
+        int quantity = 1;
 
         //print flavour options menu
         Console.WriteLine("\nAvailable Flavours: ");
@@ -149,7 +191,7 @@ IceCream CreateIceCream()
         Console.Write("\nEnter flavour option : ");
         int f_opt = Convert.ToInt16(Console.ReadLine());
         if (f_opt > 3 && f_opt < 7) premium = true;
-        if (scoops == 1)
+        if (scoops == 1 || (i == 1 && scoops != 3) || (i == 2 && scoops == 3))
         {
             Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
             f_list.Add(flavour);
@@ -162,8 +204,8 @@ IceCream CreateIceCream()
             quantity = Convert.ToInt16(Console.ReadLine());
             Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
             f_list.Add(flavour);
-            i += quantity;
         }
+        i += quantity;
     }
 
     //Toppings
@@ -215,8 +257,195 @@ IceCream CreateIceCream()
     return iceCream;
 }
 
+//Feature 5
+void DisplayOrderDetails(Dictionary<int, Customer> customerDict)
+{
+    //List customers
+    ListAllCustomers(customerDict);
+
+    //Select customer account
+    Console.Write("\nEnter customer account Id : ");
+    int opt = Convert.ToInt32(Console.ReadLine());
+
+    Console.WriteLine();
+
+    DisplayOrderHistory(customerDict, opt);
+    DisplayCurrentOrder(customerDict, opt);
+    
+    Console.WriteLine("______________________________________");
+}
+
+//Display order history
+void DisplayOrderHistory(Dictionary<int, Customer> customerDict, int index)
+{
+    //Loops through order history & Prints each order
+    Console.WriteLine("Order History:");
+    Console.WriteLine("______________________________________");
+    for (int i = 0; i < customerDict[index].OrderHistory.Count; i++)
+    {
+        Console.WriteLine($"[{i + 1}] {customerDict[index].OrderHistory[i]}");
+        Console.WriteLine($"{"_________________________________",-20}\n");
+
+        //Loops through order & Prints ice cream
+        for (int j = 0; j < customerDict[index].OrderHistory[i].IceCreamList.Count; j++)
+        {
+            Console.WriteLine($"{"(" + ( j + 1 ) + ")",8}{customerDict[index].OrderHistory[i].IceCreamList[j]}");
+
+            //Loops through ice cream flavours & Prints each flavour
+            for (int k = 0; k < customerDict[index].OrderHistory[i].IceCreamList[j].Flavours.Count; k++)
+            {
+                Console.WriteLine("\t" + customerDict[index].OrderHistory[i].IceCreamList[j].Flavours[k]);
+            }
+
+            //Loops through ice cream toppings & Prints each topping
+            for (int k = 0; k < customerDict[index].OrderHistory[i].IceCreamList[j].Toppings.Count; k++)
+            {
+                Console.WriteLine("\t" + customerDict[index].OrderHistory[i].IceCreamList[j].Toppings[k]);
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine("______________________________________");
+    }
+}
+
+//Display current order
+void DisplayCurrentOrder(Dictionary<int, Customer> customerDict, int index)
+{
+    //Loops through current order & Prints each order
+    Console.WriteLine("\nCurrent Order:");
+    Console.WriteLine("______________________________________\n");
+
+    //Loops through order & Prints ice cream
+    for (int j = 0; j < customerDict[index].CurrentOrder.IceCreamList.Count; j++)
+    {
+        Console.WriteLine($"{"(" + (j + 1) + ")",-4}{customerDict[index].CurrentOrder.IceCreamList[j]}");
+
+        //Loops through ice cream flavours & Prints each flavour
+        for (int k = 0; k < customerDict[index].CurrentOrder.IceCreamList[j].Flavours.Count; k++)
+        {
+            Console.WriteLine("    " + customerDict[index].CurrentOrder.IceCreamList[j].Flavours[k]);
+        }
+
+        //Loops through ice cream toppings & Prints each topping
+        for (int k = 0; k < customerDict[index].CurrentOrder.IceCreamList[j].Toppings.Count; k++)
+        {
+            Console.WriteLine("    " + customerDict[index].CurrentOrder.IceCreamList[j].Toppings[k]);
+        }
+        Console.WriteLine();
+    }
+    Console.WriteLine("______________________________________");
+}
+
+//Feature 6
+void Option2(Dictionary<int, Customer> customerDict, int index)
+{
+    IceCream new_IceCream = CreateIceCream();
+
+    customerDict[index].CurrentOrder.AddIceCream(new_IceCream);
+    Console.WriteLine("\nNew Ice Cream added successfully.");
+}
+
+void Option3(Dictionary<int, Customer> customerDict, int index)
+{
+    if (customerDict[index].CurrentOrder.IceCreamList.Count > 1)
+    {
+        Console.Write("Select Ice Cream to delete : ");
+        int menu_opt = Convert.ToInt32(Console.ReadLine());
+
+        customerDict[index].CurrentOrder.DeleteIceCream(menu_opt - 1);
+    }
+    else Console.WriteLine("You cannot have 0 ice creams in an order.");
+}
+void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
+{
+    string edit_menu =
+        "=== Edit Order Menu ===\n" +
+        "[1] Modify Ice Cream\n" +
+        "[2] Add Ice Cream\n" +
+        "[3] Delete Ice Cream\n";
+
+    //List customers
+    ListAllCustomers(customerDict);
+
+    //Select customer account
+    Console.Write("\nEnter customer account Id : ");
+    int customer_index = Convert.ToInt32(Console.ReadLine());
+
+    //Display current order
+    DisplayCurrentOrder(customerDict, customer_index);
+
+    Console.Write("\n" + edit_menu + "\nSelect option : ");
+    int menu_opt = Convert.ToInt32(Console.ReadLine());
+
+    switch (menu_opt)
+    {
+        case 1:
+            break;
+        case 2:
+            Option2(customerDict, customer_index);
+            break;
+        case 3:
+            Option3(customerDict, customer_index);
+            break;
+    }
+
+    DisplayOrderDetails(customerDict);
+}
+
+//Main Program
+ExtractCustomer(customerFile);
+
+while (true)
+{
+    string sys_menu =
+        "=== IceCream Menu ===\n" +
+        "[1] List all customers\n" +
+        "[2] List all current orders\n" +
+        "[3] Register a new customer\n" +
+        "[4] Create customer order\n" +
+        "[5] Display order details\n" +
+        "[6] Modify order details\n" +
+        "[0] Exit system\n";
+
+    Console.Write(sys_menu + "\nSelect option : ");
+    int menu_opt = Convert.ToInt32(Console.ReadLine());
+    if (menu_opt == 0)
+    {
+        Console.WriteLine("Exited.");
+        break;
+    }
+        Console.WriteLine($"\n=== {menu_opt} ===\n");
+    switch (menu_opt)
+    {
+        case 1:
+            ListAllCustomers(customerDict);
+            Console.WriteLine();
+            break;
+        case 2:
+            ListAllCurrentOrders(customerDict, gold_queue, regular_queue);
+            Console.WriteLine();
+            break;
+        case 3:
+            RegisterNewCustomer(customerDict, customerFile);
+            Console.WriteLine();
+            break;
+        case 4:
+            CreateCustomerOrder(customerDict);
+            break;
+        case 5:
+            DisplayOrderDetails(customerDict);
+            break;
+        case 6:
+            ModifyOrderDetails(customerDict);
+            break;
+    }
+}
+Console.ReadLine();
+
+//======================================================
+
 //Feature 4
-void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
+void CreateCustomerOrder2(Dictionary<int, Customer> customerDict)
 {
     //Retrieve the selected customer
     ListAllCustomers(customerDict);
@@ -257,116 +486,193 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
     Console.WriteLine("Order successfully made.\n");
 }
 
-void DisplayOrderDetails(Dictionary<int, Customer> customerDict)
+IceCream CreateIceCream2()
 {
-    //List customers
-    ListAllCustomers(customerDict);
+    //Create ice cream
+    IceCream? iceCream = null;
 
-    //Select customer account
-    Console.Write("\nEnter customer account Id : ");
-    int opt = Convert.ToInt32(Console.ReadLine());
+    //Option
+    string[] o_menu = { "Cup", "Cone", "Waffle" };
+    string[] w_menu = { "Red velvet", "Charcoal", "Pandan" };
+    bool dipped = false;
+    string waffleFlavour = "";
 
-    //Loops through order history & Prints each order
-    Console.WriteLine("Order History:");
-    Console.WriteLine("______________________________________");
-    for (int i = 0; i < customerDict[opt].OrderHistory.Count; i++)
+    Console.WriteLine("\n-Type-");
+
+    //print type options menu
+    Console.WriteLine("Avilable types:");
+    for (int i = 0; i < o_menu.Length; i++)
     {
-        Console.WriteLine($"[{i + 1}] {customerDict[opt].OrderHistory[i]}");
-        Console.WriteLine("\t______________________________");
-
-        //Loops through order & Prints ice cream
-        for (int j = 0; j < customerDict[opt].OrderHistory[i].IceCreamList.Count; j++)
-        {
-            Console.WriteLine("\t" + customerDict[opt].OrderHistory[i].IceCreamList[j]);
-
-            //Loops through ice cream flavours & Prints each flavour
-            for (int k = 0; k < customerDict[opt].OrderHistory[i].IceCreamList[j].Flavours.Count; k++)
-            {
-                Console.WriteLine("\t" + customerDict[opt].OrderHistory[i].IceCreamList[j].Flavours[k]);
-            }
-
-            //Loops through ice cream toppings & Prints each topping
-            for (int k = 0; k < customerDict[opt].OrderHistory[i].IceCreamList[j].Toppings.Count; k++)
-            {
-                Console.WriteLine("\t" + customerDict[opt].OrderHistory[i].IceCreamList[j].Toppings[k]);
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine("______________________________________");
+        Console.WriteLine($"[{i + 1}] {o_menu[i]}");
     }
-    //Console.WriteLine("______________________________________");
 
-    //Loops through current order & Prints each order
-    Console.WriteLine("\nCurrent Order:");
-    Console.WriteLine("______________________________________");
+    Console.Write("\nEnter option : ");
+    int option = Convert.ToInt32(Console.ReadLine());
 
-    //Console.WriteLine("\t______________________________");
-
-    //Loops through order & Prints ice cream
-    for (int j = 0; j < customerDict[opt].CurrentOrder.IceCreamList.Count; j++)
+    if (option == 2)
     {
-        Console.WriteLine("\t" + customerDict[opt].CurrentOrder.IceCreamList[j]);
-
-        //Loops through ice cream flavours & Prints each flavour
-        for (int k = 0; k < customerDict[opt].CurrentOrder.IceCreamList[j].Flavours.Count; k++)
-        {
-            Console.WriteLine("\t" + customerDict[opt].CurrentOrder.IceCreamList[j].Flavours[k]);
-        }
-
-        //Loops through ice cream toppings & Prints each topping
-        for (int k = 0; k < customerDict[opt].CurrentOrder.IceCreamList[j].Toppings.Count; k++)
-        {
-            Console.WriteLine("\t" + customerDict[opt].CurrentOrder.IceCreamList[j].Toppings[k]);
-        }
-        Console.WriteLine();
+        dipped = Cone();
     }
-    Console.WriteLine("______________________________________");
-    
-    Console.WriteLine("______________________________________");
+    else if (option == 3)
+    {
+        waffleFlavour = Waffle();
+    }
+
+    //Scoops
+    Console.Write("\n-Scoops-\nEnter number of scoops : ");
+    int scoops = Convert.ToInt16(Console.ReadLine());
+
+    List<Flavour> f_list = Flavours(scoops);
+    List<Topping> t_list = Toppings();
+
+    switch (o_menu[option - 1])
+    {
+        case "Cup":
+            iceCream = new Cup("Cup", scoops, f_list, t_list);
+            break;
+        case "Cone":
+            iceCream = new Cone("Cone", scoops, f_list, t_list, dipped);
+            break;
+        case "Waffle":
+            iceCream = new Waffle("Waffle", scoops, f_list, t_list, waffleFlavour);
+            break;
+    }
+
+    return iceCream;
 }
 
-//Main Program
-ExtractCustomer(customerFile);
-
-while (true)
+//Cone Method
+bool Cone()
 {
-    string sys_menu =
-        "=== IceCream Menu ===\n" +
-        "[1] List all customers\n" +
-        "[2] List all current orders\n" +
-        "[3] Register a new customer\n" +
-        "[4] Create customer order\n" +
-        "[5] Display order details\n" +
-        "[0] Exit system\n";
+    Console.Write("\nAdd chocolate-dipped cone? y/n : ");
+    string dip = Console.ReadLine();
+    if (dip == "y") return true;
+    else return false;
+}
 
-    Console.Write(sys_menu + "\nSelect option : ");
-    int menu_opt = Convert.ToInt32(Console.ReadLine());
-    if (menu_opt == 0)
+//Waffle Method
+string Waffle()
+{
+    string[] w_menu = { "Red velvet", "Charcoal", "Pandan" };
+    Console.WriteLine("\nAvailable waffle flavours: ");
+    for (int e = 0; e < w_menu.Length; e++)
     {
-        Console.WriteLine("Exited.");
-        break;
+        Console.WriteLine($"[{e + 1}] {w_menu[e]}");
     }
-        Console.WriteLine($"\n=== {menu_opt} ===\n");
-    switch (menu_opt)
+    Console.Write("\nSelect waffle flavour : ");
+    int waffF = Convert.ToInt32(Console.ReadLine());
+    return w_menu[waffF - 1];
+}
+
+//Option Method
+void Options()
+{
+    //Option
+    string[] o_menu = { "Cup", "Cone", "Waffle" };
+    string[] w_menu = { "Red velvet", "Charcoal", "Pandan" };
+    bool dipped = false;
+    string waffleFlavour = "";
+
+    Console.WriteLine("\n-Type-");
+
+    //print type options menu
+    Console.WriteLine("Avilable types:");
+    for (int i = 0; i < w_menu.Length; i++)
     {
-        case 1:
-            ListAllCustomers(customerDict);
-            Console.WriteLine();
-            break;
-        case 2:
-            ListAllCurrentOrders(customerDict, gold_queue, regular_queue);
-            Console.WriteLine();
-            break;
-        case 3:
-            RegisterNewCustomer(customerDict, customerFile);
-            Console.WriteLine();
-            break;
-        case 4:
-            CreateCustomerOrder(customerDict);
-            break;
-        case 5:
-            DisplayOrderDetails(customerDict);
-            break;
+        Console.WriteLine($"[{i + 1}] {o_menu[i]}");
+    }
+
+    Console.Write("\nEnter option : ");
+    int option = Convert.ToInt32(Console.ReadLine());
+
+    if (option == 2)
+    {
+       dipped = Cone();
+    }
+    else if (option == 3)
+    {
+        waffleFlavour = Waffle();
     }
 }
-Console.ReadLine();
+
+//Flavours Method
+List<Flavour> Flavours(int scoops)
+{
+    string[] f_menu = { "Vanilla", "Chocolate", "Strawberry", "Durian", "Ube", "Sea salt" };
+    List<Flavour> f_list = new List<Flavour>();
+
+    Console.Write("\n-Flavours-");
+
+    for (int i = 0; i < scoops;)
+    {
+        bool premium = false;
+        int quantity = 1;
+
+        //print flavour options menu
+        Console.WriteLine("\nAvailable Flavours: ");
+        for (int j = 0; j < f_menu.Length; j++)
+        {
+            if (j == 0) Console.WriteLine("Ordinary");
+            else if (j == 3) Console.WriteLine("Premium");
+            Console.WriteLine($"[{j + 1}] {f_menu[j]}");
+        }
+
+        Console.Write("\nEnter flavour option : ");
+        int f_opt = Convert.ToInt16(Console.ReadLine());
+        if (f_opt > 3 && f_opt < 7) premium = true;
+
+        if (scoops == 1 || (i == 1 && scoops != 3) || (i == 2 && scoops == 3))
+        {
+            Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
+            f_list.Add(flavour);
+            break;
+        }
+        //Add more
+        else
+        {
+            Console.Write("Enter scoops of flavour : ");
+            quantity = Convert.ToInt16(Console.ReadLine());
+            Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
+            f_list.Add(flavour);
+            i += quantity;
+        }
+    }
+    return f_list;
+}
+
+//Topping Method
+List<Topping> Toppings()
+{
+    string[] t_menu = { "Sprinkles", "Mochi", "Sago", "Oreos" };
+    List<Topping> t_list = new List<Topping>();
+
+    Console.WriteLine("\n-Toppings-");
+
+    while (true)
+    {
+        if (t_list.Count == 4)
+        {
+            Console.WriteLine("Topping limit reached.");
+            break;
+        }
+
+        Console.Write("Add toppings? y/n : ");
+        string t_cont = Console.ReadLine();
+        if (t_cont == "n") break;
+        else if (t_cont == "y")
+        {
+            //print topping options menu
+            Console.WriteLine("\nAvailable Toppings:");
+            for (int i = 0; i < t_menu.Length; i++)
+            {
+                Console.WriteLine($"[{i + 1}] {t_menu[i]}");
+            }
+
+            Console.Write("\nEnter topping option : ");
+            int t_opt = Convert.ToInt16(Console.ReadLine());
+            Topping topping = new Topping(t_menu[t_opt - 1]);
+            t_list.Add(topping);
+        }
+    }
+    return t_list;
+}
