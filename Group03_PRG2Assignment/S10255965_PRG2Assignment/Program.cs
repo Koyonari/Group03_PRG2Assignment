@@ -87,37 +87,34 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
     ListAllCustomers(customerDict);
 
     Console.Write("\nEnter customer account Id : ");
-    int opt = Convert.ToInt32(Console.ReadLine());
+    int customer_index = Convert.ToInt32(Console.ReadLine());
 
     //Create order object
-    Order order = new Order(opt, DateTime.Now);
+    Order current_order = new Order(customer_index, DateTime.Now);
 
     while (true)
     {
         //Create ice cream
         IceCream iceCream = CreateIceCream();
-        order.AddIceCream(iceCream);
+        current_order.AddIceCream(iceCream);
 
         //Add order tp current order
-        customerDict[opt].CurrentOrder = order;
+        customerDict[customer_index].CurrentOrder = current_order;
 
         Console.WriteLine("\nIce Cream added to order.");
 
         Console.Write("\nAdd another ice cream? y/n : ");
-        string cont_o = Console.ReadLine();
+        string continue_order = Console.ReadLine();
 
-        if (cont_o == "n")
-        {
-            break;
-        }
+        if (continue_order == "n") break;
     }
 
     //Add order to order history
-    customerDict[opt].OrderHistory.Add(order);
+    customerDict[customer_index].OrderHistory.Add(current_order);
 
     //Queue orders
-    if (customerDict[opt].Rewards.Tier == "Gold") gold_queue.Enqueue(order);
-    else regular_queue.Enqueue(order);
+    if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(current_order);
+    else regular_queue.Enqueue(current_order);
 
     Console.WriteLine("Order successfully made.\n");
 }
@@ -126,29 +123,29 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 bool Cone()
 {
     Console.Write("\nAdd chocolate-dipped cone? y/n : ");
-    string dip = Console.ReadLine();
-    if (dip == "y") return true;
+    string dipped = Console.ReadLine();
+    if (dipped == "y") return true;
     else return false;
 }
 
 //Waffle Method
 string Waffle()
 {
-    string[] w_menu = { "Red velvet", "Charcoal", "Pandan" };
+    string[] waffle_menu = { "Red velvet", "Charcoal", "Pandan" };
     Console.WriteLine("\nAvailable waffle flavours: ");
-    for (int e = 0; e < w_menu.Length; e++)
+    for (int e = 0; e < waffle_menu.Length; e++)
     {
-        Console.WriteLine($"[{e + 1}] {w_menu[e]}");
+        Console.WriteLine($"[{e + 1}] {waffle_menu[e]}");
     }
     Console.Write("\nSelect waffle flavour : ");
-    int waffF = Convert.ToInt32(Console.ReadLine());
-    return w_menu[waffF - 1];
+    int w_opt = Convert.ToInt32(Console.ReadLine());
+    return waffle_menu[w_opt - 1];
 }
 
 //Flavours Method
 List<Flavour> Flavours(int scoops)
 {
-    string[] f_menu = { "Vanilla", "Chocolate", "Strawberry", "Durian", "Ube", "Sea salt" };
+    string[] flavour_menu = { "Vanilla", "Chocolate", "Strawberry", "Durian", "Ube", "Sea salt" };
     List<Flavour> f_list = new List<Flavour>();
 
     Console.Write("\n-Flavours-");
@@ -160,20 +157,19 @@ List<Flavour> Flavours(int scoops)
 
         //print flavour options menu
         Console.WriteLine("\nAvailable Flavours: ");
-        for (int j = 0; j < f_menu.Length; j++)
+        for (int j = 0; j < flavour_menu.Length; j++)
         {
             if (j == 0) Console.WriteLine("Ordinary");
             else if (j == 3) Console.WriteLine("Premium");
-            Console.WriteLine($"[{j + 1}] {f_menu[j]}");
+            Console.WriteLine($"[{j + 1}] {flavour_menu[j]}");
         }
 
         Console.Write("\nEnter flavour option : ");
         int f_opt = Convert.ToInt16(Console.ReadLine());
         if (f_opt > 3 && f_opt < 7) premium = true;
-
         if (scoops == 1 || (i == 1 && scoops != 3) || (i == 2 && scoops == 3))
         {
-            Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
+            Flavour flavour = new Flavour(flavour_menu[f_opt - 1], premium, quantity);
             f_list.Add(flavour);
             break;
         }
@@ -182,7 +178,7 @@ List<Flavour> Flavours(int scoops)
         {
             Console.Write("Enter scoops of flavour : ");
             quantity = Convert.ToInt16(Console.ReadLine());
-            Flavour flavour = new Flavour(f_menu[f_opt - 1], premium, quantity);
+            Flavour flavour = new Flavour(flavour_menu[f_opt - 1], premium, quantity);
             f_list.Add(flavour);
             i += quantity;
         }
@@ -190,59 +186,10 @@ List<Flavour> Flavours(int scoops)
     return f_list;
 }
 
-IceCream CreateIceCream()
-{
-    //Create ice cream
-    IceCream? iceCream = null;
-
-    //Option
-    string[] o_menu = { "Cup", "Cone", "Waffle" };
-    string[] w_menu = { "Red velvet", "Charcoal", "Pandan" };
-    bool dipped = false;
-    string waffleFlavour = "";
-
-    Console.WriteLine("\n-Type-");
-
-    //print type options menu
-    Console.WriteLine("Avilable types:");
-    for (int i = 0; i < o_menu.Length; i++)
-    {
-        Console.WriteLine($"[{i + 1}] {o_menu[i]}");
-    }
-
-    Console.Write("\nEnter option : ");
-    int option = Convert.ToInt32(Console.ReadLine());
-
-    if (option == 2) dipped = Cone();
-    else if (option == 3) waffleFlavour = Waffle();
-
-    //Scoops
-    Console.Write("\n-Scoops-\nEnter number of scoops : ");
-    int scoops = Convert.ToInt16(Console.ReadLine());
-
-    List<Flavour> f_list = Flavours(scoops);
-    List<Topping> t_list = Toppings();
-
-    switch (o_menu[option - 1])
-    {
-        case "Cup":
-            iceCream = new Cup("Cup", scoops, f_list, t_list);
-            break;
-        case "Cone":
-            iceCream = new Cone("Cone", scoops, f_list, t_list, dipped);
-            break;
-        case "Waffle":
-            iceCream = new Waffle("Waffle", scoops, f_list, t_list, waffleFlavour);
-            break;
-    }
-
-    return iceCream;
-}
-
 //Topping Method
 List<Topping> Toppings()
 {
-    string[] t_menu = { "Sprinkles", "Mochi", "Sago", "Oreos" };
+    string[] topping_menu = { "Sprinkles", "Mochi", "Sago", "Oreos" };
     List<Topping> t_list = new List<Topping>();
 
     Console.WriteLine("\n-Toppings-");
@@ -256,24 +203,72 @@ List<Topping> Toppings()
         }
 
         Console.Write("Add toppings? y/n : ");
-        string t_cont = Console.ReadLine();
-        if (t_cont == "n") break;
-        else if (t_cont == "y")
+        string continue_topping = Console.ReadLine();
+        if (continue_topping == "n") break;
+        else if (continue_topping == "y")
         {
             //print topping options menu
             Console.WriteLine("\nAvailable Toppings:");
-            for (int i = 0; i < t_menu.Length; i++)
+            for (int i = 0; i < topping_menu.Length; i++)
             {
-                Console.WriteLine($"[{i + 1}] {t_menu[i]}");
+                Console.WriteLine($"[{i + 1}] {topping_menu[i]}");
             }
 
             Console.Write("\nEnter topping option : ");
             int t_opt = Convert.ToInt16(Console.ReadLine());
-            Topping topping = new Topping(t_menu[t_opt - 1]);
+            Topping topping = new Topping(topping_menu[t_opt - 1]);
             t_list.Add(topping);
         }
     }
     return t_list;
+}
+
+IceCream CreateIceCream()
+{
+    //Create ice cream
+    IceCream? iceCream = null;
+
+    //Option
+    string[] option_menu = { "Cup", "Cone", "Waffle" };
+    bool dipped = false;
+    string waffle = "";
+
+    Console.WriteLine("\n-Type-");
+
+    //print type options menu
+    Console.WriteLine("Avilable types:");
+    for (int i = 0; i < option_menu.Length; i++)
+    {
+        Console.WriteLine($"[{i + 1}] {option_menu[i]}");
+    }
+
+    Console.Write("\nEnter option : ");
+    int option = Convert.ToInt32(Console.ReadLine());
+
+    if (option == 2) dipped = Cone();
+    else if (option == 3) waffle = Waffle();
+
+    //Scoops
+    Console.Write("\n-Scoops-\nEnter number of scoops : ");
+    int scoops = Convert.ToInt16(Console.ReadLine());
+
+    List<Flavour> f_list = Flavours(scoops);
+    List<Topping> t_list = Toppings();
+
+    switch (option_menu[option - 1])
+    {
+        case "Cup":
+            iceCream = new Cup("Cup", scoops, f_list, t_list);
+            break;
+        case "Cone":
+            iceCream = new Cone("Cone", scoops, f_list, t_list, dipped);
+            break;
+        case "Waffle":
+            iceCream = new Waffle("Waffle", scoops, f_list, t_list, waffle);
+            break;
+    }
+
+    return iceCream;
 }
 
 //Feature 5
@@ -284,12 +279,12 @@ void DisplayOrderDetails(Dictionary<int, Customer> customerDict)
 
     //Select customer account
     Console.Write("\nEnter customer account Id : ");
-    int opt = Convert.ToInt32(Console.ReadLine());
+    int customer_index = Convert.ToInt32(Console.ReadLine());
 
     Console.WriteLine();
 
-    DisplayOrderHistory(customerDict, opt);
-    DisplayCurrentOrder(customerDict, opt);
+    DisplayOrderHistory(customerDict, customer_index);
+    DisplayCurrentOrder(customerDict, customer_index);
     
     Console.WriteLine("______________________________________");
 }
@@ -366,22 +361,22 @@ void Option1(Dictionary<int, Customer> customerDict, int index)
         "[4] Toppings\n";
 
     Console.Write("Select Ice Cream to modify : ");
-    int menu_index = Convert.ToInt32(Console.ReadLine());
+    int m_opt = Convert.ToInt32(Console.ReadLine());
 
-    Console.Write("\n" + iceCream_menu + "\nSelect option to modify : ");
-    int iceCream_index = Convert.ToInt32(Console.ReadLine());
+    Console.Write("\n" + iceCream_menu + "\nSelect component to modify : ");
+    int i_opt = Convert.ToInt32(Console.ReadLine());
 
-    IceCream ice = customerDict[index].CurrentOrder.IceCreamList[menu_index - 1];
+    IceCream modify_IceCream = customerDict[index].CurrentOrder.IceCreamList[m_opt - 1];
 
-    switch (iceCream_index)
+    switch (i_opt)
     {
         case 1:
-            string[] o_menu = { "Cup", "Cone", "Waffle" };
+            string[] option_menu = { "Cup", "Cone", "Waffle" };
 
             Console.WriteLine("\nAvilable types:");
-            for (int i = 0; i < o_menu.Length; i++)
+            for (int i = 0; i < option_menu.Length; i++)
             {
-                Console.WriteLine($"[{i + 1}] {o_menu[i]}");
+                Console.WriteLine($"[{i + 1}] {option_menu[i]}");
             }
 
             Console.Write("\nEnter option : ");
@@ -389,32 +384,32 @@ void Option1(Dictionary<int, Customer> customerDict, int index)
 
             if (option == 1)
             {
-                ice = new Cup("Cup", ice.Scoops, ice.Flavours, ice.Toppings);
+                modify_IceCream = new Cup("Cup", modify_IceCream.Scoops, modify_IceCream.Flavours, modify_IceCream.Toppings);
             }
             else if (option == 2)
             {
                 bool dipped = Cone();
-                ice = new Cone("Cone", ice.Scoops, ice.Flavours, ice.Toppings, dipped);
+                modify_IceCream = new Cone("Cone", modify_IceCream.Scoops, modify_IceCream.Flavours, modify_IceCream.Toppings, dipped);
             }
             else if (option == 3)
             {
                 string waffleFlavour = Waffle();
-                ice = new Waffle("Waffle", ice.Scoops, ice.Flavours, ice.Toppings, waffleFlavour);
+                modify_IceCream = new Waffle("Waffle", modify_IceCream.Scoops, modify_IceCream.Flavours, modify_IceCream.Toppings, waffleFlavour);
             }
-            customerDict[index].CurrentOrder.IceCreamList[menu_index - 1] = ice;
+            customerDict[index].CurrentOrder.IceCreamList[m_opt - 1] = modify_IceCream;
             break;
         case 2:
             Console.Write("\n-Scoops-\nEnter number of scoops : ");
             int scoops = Convert.ToInt16(Console.ReadLine());
 
-            ice.Scoops = scoops;
-            ice.Flavours = Flavours(scoops);
+            modify_IceCream.Scoops = scoops;
+            modify_IceCream.Flavours = Flavours(scoops);
             break;
         case 3:
-            ice.Flavours = Flavours(ice.Scoops);
+            modify_IceCream.Flavours = Flavours(modify_IceCream.Scoops);
             break;
         case 4:
-            ice.Toppings = Toppings();
+            modify_IceCream.Toppings = Toppings();
             break;
     }
 }
@@ -432,9 +427,9 @@ void Option3(Dictionary<int, Customer> customerDict, int index)
     if (customerDict[index].CurrentOrder.IceCreamList.Count > 1)
     {
         Console.Write("Select Ice Cream to delete : ");
-        int menu_opt = Convert.ToInt32(Console.ReadLine());
+        int d_opt = Convert.ToInt32(Console.ReadLine());
 
-        customerDict[index].CurrentOrder.DeleteIceCream(menu_opt - 1);
+        customerDict[index].CurrentOrder.DeleteIceCream(d_opt - 1);
     }
     else Console.WriteLine("You cannot have 0 ice creams in an order.");
 }
