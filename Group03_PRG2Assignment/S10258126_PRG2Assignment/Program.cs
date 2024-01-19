@@ -26,11 +26,13 @@ void DisplayMenu()
     option = int.Parse(Console.ReadLine());
 }
 
-//1. List all customers
+//1. List all customers - Done
 void ListAllCustomers(Dictionary<int, Customer> customerDict)
 {
+    //Print header
     Console.WriteLine($"{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}");
 
+    //Print customer information line by line and skip header
     for (int i = 1; i < data.Length; i++)
     {
         string[] customer_data = data[i].Split(",");
@@ -47,7 +49,7 @@ void ListAllCustomers(Dictionary<int, Customer> customerDict)
 }
 
 
-//3. Register a new customer
+//3. Register a new customer - Done
 void RegisterCustomer()
 {
     //Prompt user for info
@@ -65,7 +67,7 @@ void RegisterCustomer()
         int cid = int.Parse(customer_data[1]);
         DateTime cdob = DateTime.Parse(customer_data[2]);
         Customer customer = new Customer(cname, cid, cdob);
-
+        
         //Create Pointcard object
         PointCard newcard = new PointCard(0, 0);
 
@@ -73,7 +75,7 @@ void RegisterCustomer()
         customer.Rewards = newcard;
 
         //Append customer information to csv file
-        string data = $"{customer.Name},{customer.MemberId},{customer.Dob.ToString("dd/MM/yyyy")}";
+        string data = $"{customer.Name},{customer.MemberId},{customer.Dob.ToString("dd/MM/yyyy")},{customer.Rewards.Tier},{customer.Rewards.Points},{customer.Rewards.PunchCard}";
         File.AppendAllText(path, data + Environment.NewLine);
 
         //Display message to indicate registration status

@@ -16,7 +16,7 @@ namespace S10258126_PRG2Assignment
 
         public PointCard(int input_points, int input_punchCard)
         {
-            AddPoints(input_points);
+            Points = input_points;
             PunchCard = input_punchCard;
         }
 
