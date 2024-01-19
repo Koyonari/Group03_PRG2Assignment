@@ -14,7 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("S10258126_PRG2Assignment")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< Updated upstream:Group03_PRG2Assignment/S10258126_PRG2Assignment/obj/Release/net6.0/S10258126_PRG2Assignment.AssemblyInfo.cs
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a56488879b68aea4c55e3eae1172e095f6cf2ba9")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65e7758395aa109ed0d52705ac059855245eb828")]
+>>>>>>> Stashed changes:S10258126_PRG2Assignment/obj/Debug/net6.0/S10258126_PRG2Assignment.AssemblyInfo.cs
 [assembly: System.Reflection.AssemblyProductAttribute("S10258126_PRG2Assignment")]
 [assembly: System.Reflection.AssemblyTitleAttribute("S10258126_PRG2Assignment")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
