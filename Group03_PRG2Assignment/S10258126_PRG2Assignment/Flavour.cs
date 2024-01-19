@@ -20,7 +20,8 @@ namespace S10258126_PRG2Assignment
         }
         public override string ToString()
         {
-            return base.ToString();
+            if (Premium == true) return $" {Quantity} Premium {Type}";
+            else return $" {Quantity} Ordinary {Type}";
         }
     }
 }

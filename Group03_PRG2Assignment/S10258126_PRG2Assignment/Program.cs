@@ -2,9 +2,12 @@
 
 //Basic Features
 
-//Create customers and orders from csv file
+//Create customers, orders from csv file and make dictionaries/queues
 string path = Path.Combine("..", "..", "..", "customers.csv"); //Relative path to csv file as current working directory is in bin > Debug > .net 6.0 >
 string[] data = File.ReadAllLines(path);
+Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>(); // Create a Dictionary to store Customer Objects
+Queue<Order> gold_queue = new Queue<Order>();
+Queue<Order> regular_queue = new Queue<Order>();
 
 //Create menu method to call
 int option = 10;
@@ -24,10 +27,25 @@ void DisplayMenu()
 }
 
 //1. List all customers
-void ListCustomers()
+void ListAllCustomers(Dictionary<int, Customer> customerDict)
 {
+    Console.WriteLine($"{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}");
+
+    for (int i = 1; i < data.Length; i++)
+    {
+        string[] customer_data = data[i].Split(",");
+        int customerId = int.Parse(customer_data[1]);
+        Customer customer = new Customer(customer_data[0], customerId, DateTime.Parse(customer_data[2]));
+
+        //Add key-pair value in customer dictionary
+        customerDict.Add(customerId, customer);
+
+        // Print the combined information
+        Console.WriteLine($"{customer}{customer_data[3],-17}{int.Parse(customer_data[4]),-17}{int.Parse(customer_data[5])}");
+    }
     Console.WriteLine();
 }
+
 
 //3. Register a new customer
 void RegisterCustomer()
@@ -136,7 +154,7 @@ do
         //1. List all customers
         if (option == 1)
         {
-
+            ListAllCustomers(customerDict);
         }
         //3. Register a new customer
         else if (option == 3)

@@ -21,16 +21,29 @@ namespace S10258126_PRG2Assignment
             TimeReceived = input_timeReceived;
         }
 
-        void ModifyIceCream(int iceCreamPos) { }
+        void ModifyIceCream(int iceCreamPos) {
+            IceCream modify_IceCream = IceCreamList[iceCreamPos];
+        }
 
         void AddIceCream(IceCream add_IceCream)
         {
             IceCreamList.Add(add_IceCream);
         }
 
-        void DeleteIceCream(int del_IceCream) { }
+        void DeleteIceCream(int del_IceCream) 
+        {
+            IceCreamList.RemoveAt(del_IceCream);
+        }
 
-        double CalculateTotal() { return 0; }
+        public double CalculateTotal()
+        {
+            double total = 0;
+            for (int i = 0; i < IceCreamList.Count; i++)
+            {
+                total += IceCreamList[i].CalculatePrice();
+            }
+            return total;
+        }
 
         public override string ToString()
         {

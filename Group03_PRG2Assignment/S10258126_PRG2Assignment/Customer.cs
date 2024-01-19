@@ -24,13 +24,14 @@ namespace S10258126_PRG2Assignment
             Dob = input_dob;
         }
 
-        Order MakeOrder()
+        public Order MakeOrder()
         {
+            CurrentOrder = new Order(Convert.ToInt32(DateTime.Now.ToString("HHss")), DateTime.Now);
             OrderHistory.Add(CurrentOrder);
             return CurrentOrder;
         }
 
-        bool IsBirthday()
+        public bool IsBirthday()
         {
             if (DateTime.Today == Dob) return true;
             return false;
@@ -38,7 +39,8 @@ namespace S10258126_PRG2Assignment
 
         public override string ToString()
         {
-            return $"Name: {Name} MemberID: {MemberId} DateOfBirth: {Convert.ToString(Dob)}";
+            //Format date of birth to dd/mm/yyyy
+            return $"{Name,-10}{MemberId,-10}{Dob.ToString("dd/MM/yyyy"),-12}";
         }
     }
 }
