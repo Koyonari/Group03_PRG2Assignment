@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj": {}
+    "C:\\Users\\jakec\\Ngee Ann Files\\Programming II (1_PRG2_011850)\\Practical\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj": {}
   },
   "projects": {
-    "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj": {
+    "C:\\Users\\jakec\\Ngee Ann Files\\Programming II (1_PRG2_011850)\\Practical\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj",
+        "projectUniqueName": "C:\\Users\\jakec\\Ngee Ann Files\\Programming II (1_PRG2_011850)\\Practical\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj",
         "projectName": "S10255965_PRG2Assignment",
-        "projectPath": "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj",
-        "packagesPath": "C:\\Users\\anyon\\.nuget\\packages\\",
-        "outputPath": "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment\\obj\\",
+        "projectPath": "C:\\Users\\jakec\\Ngee Ann Files\\Programming II (1_PRG2_011850)\\Practical\\Assignment\\S10255965_PRG2Assignment\\S10255965_PRG2Assignment.csproj",
+        "packagesPath": "C:\\Users\\jakec\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jakec\\Ngee Ann Files\\Programming II (1_PRG2_011850)\\Practical\\Assignment\\S10255965_PRG2Assignment\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\anyon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jakec\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,34 +1,48 @@
-﻿namespace S10258126_PRG2Assignment
+﻿namespace ICTreatsSystem
 {
     class Order
     {
-        public int id { get; set; }
-        public DateTime timeReceived { get; set; } = DateTime.Now;
-        public DateTime? timeFulfilled { get; set; }
-        public List<IceCream> iceCreamList { get; set; } = new List<IceCream>();
+        public int Id { get; set; }
+        public DateTime TimeReceived { get; set; }
+        public DateTime? TimeFulfilled { get; set; }
+        public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
 
         public Order() { }
 
         public Order(int input_id, DateTime input_timeReceived)
         {
-            id = input_id;
-            timeReceived = input_timeReceived;
+            Id = input_id;
+            TimeReceived = input_timeReceived;
         }
 
-        void ModifyIceCream(int iceCreamPos) { }
-
-        void AddIceCream(IceCream add_IceCream)
+        public void ModifyIceCream(int iceCreamPos)
         {
-            iceCreamList.Add(add_IceCream);
+            IceCream modify_IceCream = IceCreamList[iceCreamPos];
         }
 
-        void DeleteIceCream(int del_IceCream) { }
+        public void AddIceCream(IceCream add_IceCream)
+        {
+            IceCreamList.Add(add_IceCream);
+        }
 
-        double CalculateTotal() { return 0; }
+        public void DeleteIceCream(int del_IceCream)
+        {
+            IceCreamList.RemoveAt(del_IceCream);
+        }
+
+        public double CalculateTotal() 
+        {
+            double total = 0;
+            for (int i = 0; i < IceCreamList.Count; i++)
+            {
+                total += IceCreamList[i].CalculatePrice();
+            }
+            return total; 
+        }
 
         public override string ToString()
         {
-            return $"OrderID: {id} TimeRecieved: {timeReceived} TimeFulfilled: {timeFulfilled}";
+            return $"OrderID: {Id}\n    TimeReceived: {TimeReceived}\n    TimeFulfilled: {TimeFulfilled}";
         }
     }
 }

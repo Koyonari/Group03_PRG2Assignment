@@ -2,22 +2,23 @@
 {
     class Flavour
     {
-        public string type { get; set; }
-        public bool premium { get; set; }
-        public int quantity { get; set; }
+        public string Type { get; set; }
+        public bool Premium { get; set; }
+        public int Quantity { get; set; }
 
         public Flavour() { }
 
         public Flavour(string input_type, bool input_premium, int input_quantity)
         {
-            type = input_type;
-            premium = input_premium;
-            quantity = input_quantity;
+            Type = input_type;
+            Premium = input_premium;
+            Quantity = input_quantity;
         }
 
         public override string ToString()
         {
-            return $"{base.ToString()} Type: {type} Premium: {premium} Quantity: {quantity}";
+            if (Premium == true) return $" {Quantity} Premium {Type}";
+            else return $" {Quantity} Ordinary {Type}";
         }
     }
 }

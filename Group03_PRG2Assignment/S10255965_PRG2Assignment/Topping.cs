@@ -2,18 +2,18 @@
 {
     class Topping
     {
-        public string type { get; set; }
+        public string Type { get; set; }
 
         public Topping() { }
 
         public Topping(string input_type)
         {
-            type = input_type;
+            Type = input_type;
         }
 
         public override string ToString()
         {
-            return $"{base.ToString()} Type: {type}";
+            return $" + {Type}";
         }
     }
 }
