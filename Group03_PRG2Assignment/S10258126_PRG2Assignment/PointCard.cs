@@ -48,7 +48,7 @@ namespace S10258126_PRG2Assignment
             }
         }
 
-        void punch()//Not Done
+        public void punch()//Not Done
         {
             PunchCard++;
             if (PunchCard == 10)

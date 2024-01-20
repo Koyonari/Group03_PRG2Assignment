@@ -21,16 +21,16 @@ namespace S10258126_PRG2Assignment
             TimeReceived = input_timeReceived;
         }
 
-        void ModifyIceCream(int iceCreamPos) {
+        public void ModifyIceCream(int iceCreamPos) {
             IceCream modify_IceCream = IceCreamList[iceCreamPos];
         }
 
-        void AddIceCream(IceCream add_IceCream)
+        public void AddIceCream(IceCream add_IceCream)
         {
             IceCreamList.Add(add_IceCream);
         }
 
-        void DeleteIceCream(int del_IceCream) 
+        public void DeleteIceCream(int del_IceCream) 
         {
             IceCreamList.RemoveAt(del_IceCream);
         }
