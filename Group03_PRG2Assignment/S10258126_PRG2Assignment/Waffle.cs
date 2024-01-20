@@ -9,15 +9,14 @@ namespace S10258126_PRG2Assignment
     class Waffle : IceCream
     {
         public string WaffleFlavour { get; set; }
+
         public Waffle() { }
-        public Waffle(string o, int s, List<Flavour> f, List<Topping> t, string wf)
+
+        public Waffle(string o, int s, List<Flavour> f, List<Topping> t, string input_waffleFlavour) : base(o, s, f, t)
         {
-            Option = o;
-            Scoops = s;
-            Flavours = f;
-            Toppings = t;
-            WaffleFlavour = wf;
+            WaffleFlavour = input_waffleFlavour;
         }
+
         public override double CalculatePrice()
         {
             //Initialise prices for each component
@@ -74,13 +73,10 @@ namespace S10258126_PRG2Assignment
             double price = option_price + scoop_price + flavour_price + topping_price;
             return price;
         }
+
         public override string ToString()
         {
-            string description = $"Ice Cream: {Option} ({Scoops} scoops)\n";
-            description += $"Flavors: {string.Join(", ", Flavours.Select(f => f.Type))}\n";
-            description += $"Toppings: {string.Join(", ", Toppings.Select(t => t.Type))}\n";
-            description += $"Price: ${CalculatePrice():0.00}";
-            return description;
+            return $"{base.ToString()}, {WaffleFlavour} waffle flavour.";
         }
     }
 }

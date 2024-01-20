@@ -20,20 +20,42 @@ Queue<Order> gold_queue = new Queue<Order>();
 Queue<Order> regular_queue = new Queue<Order>();
 
 //Create menu method to call
-int option = 10;
+int option = -1;
 void DisplayMenu()
 {
-    Console.WriteLine("------------- MENU --------------");
-    Console.WriteLine("[1] List all customers");
-    Console.WriteLine("[2] List all current orders");
-    Console.WriteLine("[3] Register a new customer");
-    Console.WriteLine("[4] Create a customer's order");
-    Console.WriteLine("[5] Display order details of a customer");
-    Console.WriteLine("[6] Modify order details");
-    Console.WriteLine("[0] Exit");
-    Console.WriteLine("---------------------------------");
-    Console.Write("Enter your option: ");
-    option = int.Parse(Console.ReadLine());
+    try
+    {
+        Console.WriteLine("------------- MENU --------------");
+        Console.WriteLine("[1] List all customers");
+        Console.WriteLine("[2] List all current orders");
+        Console.WriteLine("[3] Register a new customer");
+        Console.WriteLine("[4] Create a customer's order");
+        Console.WriteLine("[5] Display order details of a customer");
+        Console.WriteLine("[6] Modify order details");
+        Console.WriteLine("[0] Exit");
+        Console.WriteLine("---------------------------------");
+        Console.Write("Enter your option: ");
+        option = int.Parse(Console.ReadLine());
+
+        //Check if option is valid
+        if (option < 0 || option > 6)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+    }
+    //Catch exceptions for alphabets and options not in range
+    catch (FormatException ex)
+    {
+        Console.WriteLine("Invalid input format! Please enter a number.\n");
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Console.WriteLine("Invalid option. Please choose a number between 0 and 6.");
+    }
+    finally
+    {
+        Console.WriteLine();
+    }
 }
 
 //1. List all customers - Done
@@ -128,7 +150,6 @@ void CreateOrder(Dictionary<int, Customer> customerDict)
     else regular_queue.Enqueue(current_order);
 
     Console.WriteLine("Order successfully made.\n");
-
 }
 
 //IceCream Method
@@ -308,6 +329,7 @@ do
         //1. List all customers
         if (option == 1)
         {
+            customerDict.Clear(); //Ensures that any existing customer data is removed to prevent duplicate keys.
             ListAllCustomers(customerDict);
         }
         //3. Register a new customer
@@ -318,6 +340,7 @@ do
         //4. Create a customer's order
         else if (option == 4)
         {
+            customerDict.Clear(); //Ensures that any existing customer data is removed to prevent duplicate keys.
             CreateOrder(customerDict);
         }
     }

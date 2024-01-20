@@ -9,14 +9,16 @@ namespace S10258126_PRG2Assignment
     class Cone : IceCream
     {
         public bool Dipped { get; set; }
+
         public Cone() { }
-        public Cone(string o, int s, List<Flavour> f, List<Topping> t, bool d) : base(o, s, f, t)
+
+        public Cone(string o, int s, List<Flavour> f, List<Topping> t, bool input_dipped) : base(o, s, f, t)
         {
-            Dipped = d;
+            Dipped = input_dipped;
         }
+
         public override double CalculatePrice()
         {
-            //Initialise prices for each component
             double option_price = 0; //Additional cost for dipped cone
             double scoop_price = 0;
             double flavour_price = 0;
@@ -61,13 +63,11 @@ namespace S10258126_PRG2Assignment
             double price = option_price + scoop_price + flavour_price + topping_price;
             return price;
         }
+
         public override string ToString()
         {
-            string description = $"Ice Cream: {Option} ({Scoops} scoops)\n";
-            description += $"Flavors: {string.Join(", ", Flavours.Select(f => f.Type))}\n";
-            description += $"Toppings: {string.Join(", ", Toppings.Select(t => t.Type))}\n";
-            description += $"Price: ${CalculatePrice():0.00}";
-            return description;
+            if (Dipped == true) return $"{base.ToString()}, dipped.";
+            else return $"{base.ToString()}, non-dipped.";
         }
     }
 }

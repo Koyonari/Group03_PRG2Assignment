@@ -26,7 +26,7 @@ namespace S10258126_PRG2Assignment
             }
             else
             {
-                return $"{Quantity} {Type}";
+                return $"{Quantity} Ordinary {Type}";
             }
         }
 
