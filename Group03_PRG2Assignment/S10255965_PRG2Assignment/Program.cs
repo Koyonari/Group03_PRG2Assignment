@@ -15,11 +15,38 @@ void ExtractCustomer(string filename) //Reads File, Creates objects
         if (i != 0)
         {
             Customer customer = new Customer(customer_details[0], Convert.ToInt32(customer_details[1]), Convert.ToDateTime(customer_details[2])); //Creates Customer Object
-
-            customer.Rewards = new PointCard();
+            customer.Rewards = new PointCard(Convert.ToInt32(customer_details[4]), Convert.ToInt32(customer_details[5])); ////Create PointCard object in Customer object
             customerDict.Add(customer.MemberId, customer); //Adds Customer Object to Dictionary
         }
     }
+}
+
+int ValidateInt(string text, int range, bool allowzero)
+{
+    int min = 0;
+    int option = 0;
+    bool flag = true;
+
+    if (allowzero == true) min = -1;
+
+    while (flag)
+    {
+        try
+        {
+            Console.Write(text);
+            option = Convert.ToInt32(Console.ReadLine());
+            if (option > min && option <= range)
+            {
+                flag = false;
+            }
+            else Console.WriteLine("Option not available.");
+        }
+        catch
+        {
+            Console.WriteLine("Invalid Input. Please input a number.");
+        }
+    }
+    return option;
 }
 
 //Feature 1 - List all customers
@@ -134,8 +161,13 @@ string Waffle()
     {
         Console.WriteLine($"[{e + 1}] {waffle_menu[e]}");
     }
-    Console.Write("\nSelect waffle flavour : ");
-    int w_opt = Convert.ToInt32(Console.ReadLine());
+
+    //****
+    //Console.Write("\nSelect waffle flavour : ");
+    //int w_opt = Convert.ToInt32(Console.ReadLine());
+
+    int w_opt = ValidateInt("\nSelect waffle flavour : ", 3, false);
+
     return waffle_menu[w_opt - 1];
 }
 
@@ -162,8 +194,12 @@ List<Flavour> Flavours(int scoops)
             Console.WriteLine($"[{j + 1}] {flavour_menu[j]}");
         }
 
-        Console.Write("\nEnter flavour option : ");
-        int f_opt = Convert.ToInt16(Console.ReadLine());
+        //****
+        //Console.Write("\nEnter flavour option : ");
+        //int f_opt = Convert.ToInt16(Console.ReadLine());
+
+        int f_opt = ValidateInt("\nEnter flavour option : ", 6, false);
+
         if (f_opt > 3 && f_opt < 7) premium = true; //Check if flavour selected is premium
         if (scoops == 1 || (i == 1 && scoops != 3) || (i == 2 && scoops == 3)) 
         {
@@ -173,8 +209,12 @@ List<Flavour> Flavours(int scoops)
         }
         else
         {
-            Console.Write("Enter scoops of flavour : ");
-            quantity = Convert.ToInt16(Console.ReadLine());
+            //****
+            //Console.Write("Enter scoops of flavour : ");
+            //quantity = Convert.ToInt16(Console.ReadLine());
+
+            quantity = ValidateInt("\nEnter scoops of flavour : ", scoops - i, false);
+
             Flavour flavour = new Flavour(flavour_menu[f_opt - 1], premium, quantity);
             f_list.Add(flavour);
             i += quantity;
@@ -211,8 +251,12 @@ List<Topping> Toppings()
                 Console.WriteLine($"[{i + 1}] {topping_menu[i]}");
             }
 
-            Console.Write("\nEnter topping option : ");
-            int t_opt = Convert.ToInt16(Console.ReadLine());
+            //****
+            //Console.Write("\nEnter topping option : ");
+            //int t_opt = Convert.ToInt16(Console.ReadLine());
+
+            int t_opt = ValidateInt("\nEnter topping option : ", 4, false);
+
             Topping topping = new Topping(topping_menu[t_opt - 1]);
             t_list.Add(topping);
         }
@@ -238,15 +282,22 @@ IceCream CreateIceCream()
     }
 
     //Option
-    Console.Write("\nEnter option : ");
-    int option = Convert.ToInt32(Console.ReadLine());
+    //****
+    //Console.Write("\nEnter option : ");
+    //int option = Convert.ToInt32(Console.ReadLine());
+
+    int option = ValidateInt("\nEnter option : ", 3, false);
 
     if (option == 2) dipped = Cone();
     else if (option == 3) waffle = Waffle();
 
     //Scoops
-    Console.Write("\n-Scoops-\nEnter number of scoops : ");
-    int scoops = Convert.ToInt16(Console.ReadLine());
+    Console.WriteLine("-Scoops-");
+    //****
+    //Console.Write("\n-Scoops-\nEnter number of scoops : ");
+    //int scoops = Convert.ToInt16(Console.ReadLine());
+
+    int scoops = ValidateInt("\nEnter number of scoops : ", 3, false);
 
     //Flavours & Toppings
     List<Flavour> f_list = Flavours(scoops);
@@ -353,13 +404,21 @@ void Option1(Dictionary<int, Customer> customerDict, int index)
         "[1] Option\n" +
         "[2] Scoops\n" +
         "[3] Flavours\n" +
-        "[4] Toppings\n";
+        "[4] Toppings";
 
-    Console.Write("Select Ice Cream to modify : ");
-    int m_opt = Convert.ToInt32(Console.ReadLine());
+    //****
+    //Console.Write("Select Ice Cream to modify : ");
+    //int m_opt = Convert.ToInt32(Console.ReadLine());
 
-    Console.Write("\n" + iceCream_menu + "\nSelect component to modify : ");
-    int i_opt = Convert.ToInt32(Console.ReadLine());
+    int m_opt = ValidateInt("\nSelect Ice Cream to modify : ", customerDict[index].CurrentOrder.IceCreamList.Count, false);
+
+    Console.Write("\n" + iceCream_menu + "");
+
+    //****
+    //Console.Write("Select component to modify : ");
+    //int i_opt = Convert.ToInt32(Console.ReadLine());
+
+    int i_opt = ValidateInt("\nSelect component to modify : ", 4, false);
 
     IceCream modify_IceCream = customerDict[index].CurrentOrder.IceCreamList[m_opt - 1];
 
@@ -374,8 +433,11 @@ void Option1(Dictionary<int, Customer> customerDict, int index)
                 Console.WriteLine($"[{i + 1}] {option_menu[i]}");
             }
 
-            Console.Write("\nEnter option : ");
-            int option = Convert.ToInt32(Console.ReadLine());
+            //****
+            //Console.Write("\nEnter option : ");
+            //int option = Convert.ToInt32(Console.ReadLine());
+
+            int option = ValidateInt("\nEnter option : ", 3, false);
 
             if (option == 1)
             {
@@ -394,8 +456,12 @@ void Option1(Dictionary<int, Customer> customerDict, int index)
             customerDict[index].CurrentOrder.IceCreamList[m_opt - 1] = modify_IceCream; //Replace existing IceCream object with new object
             break;
         case 2: //Change Scoops
-            Console.Write("\n-Scoops-\nEnter number of scoops : ");
-            int scoops = Convert.ToInt16(Console.ReadLine());
+            Console.WriteLine("-Scoops-");
+            //****
+            //Console.Write("\nEnter number of scoops : ");
+            //int scoops = Convert.ToInt16(Console.ReadLine());
+
+            int scoops = ValidateInt("\nEnter number of scoops : ", 3, false);
 
             modify_IceCream.Scoops = scoops;
             modify_IceCream.Flavours = Flavours(scoops); //Feature 4 - Flavour Method
@@ -421,8 +487,11 @@ void Option3(Dictionary<int, Customer> customerDict, int index)
 {
     if (customerDict[index].CurrentOrder.IceCreamList.Count > 1)
     {
-        Console.Write("Select Ice Cream to delete : ");
-        int d_opt = Convert.ToInt32(Console.ReadLine());
+        //****
+        //Console.Write("Select Ice Cream to delete : ");
+        //int d_opt = Convert.ToInt32(Console.ReadLine());
+
+        int d_opt = ValidateInt("\nSelect Ice Cream to delete : ", customerDict[index].CurrentOrder.IceCreamList.Count, false);
 
         customerDict[index].CurrentOrder.DeleteIceCream(d_opt - 1);
     }
@@ -444,8 +513,13 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
 
     DisplayCurrentOrder(customerDict, customer_index); //Feature 5 - Display current order Method
 
-    Console.Write("\n" + edit_menu + "\nSelect option : ");
-    int menu_opt = Convert.ToInt32(Console.ReadLine());
+    Console.Write("\n" + edit_menu);
+
+    //****
+    //Console.Write("\n" + edit_menu + "\nSelect option : ");
+    //int menu_opt = Convert.ToInt32(Console.ReadLine());
+
+    int menu_opt = ValidateInt("\nSelect option : ", 4, false);
 
     switch (menu_opt)
     {
@@ -476,16 +550,22 @@ while (true)
         "[4] Create customer order\n" +
         "[5] Display order details\n" +
         "[6] Modify order details\n" +
-        "[0] Exit system\n";
+        "[0] Exit system";
 
-    Console.Write(sys_menu + "\nSelect option : ");
-    int menu_opt = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine(sys_menu);
+    //****
+    //Console.Write(sys_menu + "\nSelect option : ");
+    //int menu_opt = Convert.ToInt32(Console.ReadLine());
+
+    int menu_opt = ValidateInt("\nSelect option : ", 6, true);
+
     if (menu_opt == 0)
     {
         Console.WriteLine("Exited.");
         break;
     }
-        Console.WriteLine($"\n=== {menu_opt} ===\n");
+
+    Console.WriteLine($"\n=== {menu_opt} ===\n");
     switch (menu_opt)
     {
         case 1:
