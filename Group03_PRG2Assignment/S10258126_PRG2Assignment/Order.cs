@@ -9,7 +9,7 @@ namespace S10258126_PRG2Assignment
     class Order
     {
         public int Id { get; set; }
-        public DateTime TimeReceived { get; set; } = DateTime.Now;
+        public DateTime TimeReceived { get; set; }
         public DateTime? TimeFulfilled { get; set; }
         public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
 
@@ -21,20 +21,34 @@ namespace S10258126_PRG2Assignment
             TimeReceived = input_timeReceived;
         }
 
-        void ModifyIceCream(int iceCreamPos) { }
+        public void ModifyIceCream(int iceCreamPos)
+        {
+            IceCream modify_IceCream = IceCreamList[iceCreamPos];
+        }
 
-        void AddIceCream(IceCream add_IceCream)
+        public void AddIceCream(IceCream add_IceCream)
         {
             IceCreamList.Add(add_IceCream);
         }
 
-        void DeleteIceCream(int del_IceCream) { }
+        public void DeleteIceCream(int del_IceCream)
+        {
+            IceCreamList.RemoveAt(del_IceCream);
+        }
 
-        double CalculateTotal() { return 0; }
+        public double CalculateTotal()
+        {
+            double total = 0;
+            for (int i = 0; i < IceCreamList.Count; i++)
+            {
+                total += IceCreamList[i].CalculatePrice();
+            }
+            return total;
+        }
 
         public override string ToString()
         {
-            return $"OrderID: {Id} TimeRecieved: {TimeReceived} TimeFulfilled: {TimeFulfilled}";
+            return $"OrderID: {Id}\n    TimeReceived: {TimeReceived}\n    TimeFulfilled: {TimeFulfilled}";
         }
     }
 }

@@ -20,7 +20,7 @@ namespace S10258126_PRG2Assignment
             PunchCard = input_punchCard;
         }
 
-        void AddPoints(int add_points)
+        public void AddPoints(int add_points)
         {
             Points += add_points;
             if (Tier == "Ordinary")
@@ -32,21 +32,23 @@ namespace S10258126_PRG2Assignment
             {
                 if (Points >= 100) Tier = "Gold";
             }
+            Console.WriteLine(add_points);
+            Console.WriteLine(Tier);
         }
 
-        void RedeemPoints(int use_points)//Not Done
+        public void RedeemPoints(int use_points)//Not Done
         {
             if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
             {
                 double cost_offset = use_points * 0.02;
                 if (Tier == "Gold")
                 {
-
+                    int i = 0;
                 }
             }
         }
 
-        void punch()//Not Done
+        public void punch()//Not Done
         {
             PunchCard++;
             if (PunchCard == 10)

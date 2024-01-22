@@ -6,17 +6,20 @@
 
 namespace S10258126_PRG2Assignment
 {
-    public class Topping
+    class Topping
     {
         public string Type { get; set; }
+
         public Topping() { }
-        public Topping(string t)
+
+        public Topping(string input_type)
         {
-            Type = t;
+            Type = input_type;
         }
+
         public override string ToString()
         {
-            return base.ToString();
+            return $" + {Type}";
         }
     }
 }

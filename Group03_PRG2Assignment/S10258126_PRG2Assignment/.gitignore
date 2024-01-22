@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Group03_PRG2Assignment/S10258126_PRG2Assignment/.vs/S10258126_PRG2Assignment/FileContentIndex/1a4053fc-fd97-40e3-a26d-a40c0950be84.vsidx
+/Group03_PRG2Assignment/S10258126_PRG2Assignment/.vs/S10258126_PRG2Assignment/FileContentIndex/7ef1d5fc-c881-4139-b33d-2be7c8a219ca.vsidx
+*.vsidx
