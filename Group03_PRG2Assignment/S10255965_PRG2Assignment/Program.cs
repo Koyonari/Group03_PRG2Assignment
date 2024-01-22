@@ -126,10 +126,22 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 
         Console.WriteLine("\nIce Cream added to order.");
 
-        Console.Write("\nAdd another ice cream? y/n : ");
-        string continue_order = Console.ReadLine();
+        try
+        {
+            while (true)
+            {
+                Console.Write("\nAdd another ice cream? y/n : ");
+                string continue_order = Console.ReadLine();
 
-        if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+                if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+                else if (continue_order != "y") Console.WriteLine("Invalid Input. Please input y/n.");
+            }
+            break;
+        }
+        catch
+        {
+            Console.WriteLine("Invalid Input. Please input y/n.");
+        }
     }
 
     customerDict[customer_index].OrderHistory.Add(current_order); //Add Order to OrderHistory attribute in Customer object
@@ -519,7 +531,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
     //Console.Write("\n" + edit_menu + "\nSelect option : ");
     //int menu_opt = Convert.ToInt32(Console.ReadLine());
 
-    int menu_opt = ValidateInt("\nSelect option : ", 4, false);
+    int menu_opt = ValidateInt("\nSelect option : ", 3, false);
 
     switch (menu_opt)
     {

@@ -26,8 +26,8 @@
             {
                 if (Points >= 100) Tier = "Gold";
             }
-            Console.WriteLine(add_points);
-            Console.WriteLine(Tier);
+            //Console.WriteLine(add_points);
+            //Console.WriteLine(Tier);
         }
 
         public void RedeemPoints(int use_points)//Not Done
