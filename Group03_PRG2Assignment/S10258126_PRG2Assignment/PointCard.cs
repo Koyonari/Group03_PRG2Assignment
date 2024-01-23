@@ -16,7 +16,7 @@ namespace S10258126_PRG2Assignment
 
         public PointCard(int input_points, int input_punchCard)
         {
-            Points = input_points;
+            AddPoints(input_points);
             PunchCard = input_punchCard;
         }
 
@@ -32,8 +32,8 @@ namespace S10258126_PRG2Assignment
             {
                 if (Points >= 100) Tier = "Gold";
             }
-            Console.WriteLine(add_points);
-            Console.WriteLine(Tier);
+            //Console.WriteLine(add_points);
+            //Console.WriteLine(Tier);
         }
 
         public void RedeemPoints(int use_points)//Not Done
@@ -48,7 +48,7 @@ namespace S10258126_PRG2Assignment
             }
         }
 
-        public void punch()//Not Done
+        void punch()//Not Done
         {
             PunchCard++;
             if (PunchCard == 10)

@@ -27,15 +27,7 @@ namespace S10258126_PRG2Assignment
 
             //Calculate price for flavour and cone
             option_price += 3; //Additional cost for waffle
-            if (WaffleFlavour == "Red Velvet")
-            {
-                option_price += 3;
-            }
-            else if (WaffleFlavour == "Charcoal")
-            {
-                option_price += 3;
-            }
-            else if (WaffleFlavour == "Pandan Waffle")
+            if (WaffleFlavour == "Red Velvet" || WaffleFlavour == "Charcoal" || WaffleFlavour == "Pandan Waffle")
             {
                 option_price += 3;
             }
