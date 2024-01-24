@@ -36,7 +36,7 @@ namespace S10258126_PRG2Assignment
             //Console.WriteLine(Tier);
         }
 
-        public void RedeemPoints(int use_points)//Not Done
+        public void RedeemPoints(int use_points)//Requires advanced
         {
             if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
             {
@@ -48,7 +48,7 @@ namespace S10258126_PRG2Assignment
             }
         }
 
-        void punch()//Not Done
+        void punch()//Requires advanced
         {
             PunchCard++;
             if (PunchCard == 10)
@@ -59,7 +59,7 @@ namespace S10258126_PRG2Assignment
 
         public override string ToString()
         {
-            return $"Points: {Points} PunchCard: {PunchCard} Tier: {Tier}";
+            return $"{Tier,-17}{Points,-17}{PunchCard}";
         }
     }
 }
