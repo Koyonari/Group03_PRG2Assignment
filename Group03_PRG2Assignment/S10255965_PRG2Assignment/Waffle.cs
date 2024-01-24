@@ -1,5 +1,8 @@
-﻿using static System.Formats.Asn1.AsnWriter;
-
+﻿//==========================================================
+// Student Number : S10258126
+// Student Name : An Yong Shyan
+// Partner Name : Chan Man Lock Jake
+//==========================================================
 namespace ICTreatsSystem
 {
     class Waffle : IceCream

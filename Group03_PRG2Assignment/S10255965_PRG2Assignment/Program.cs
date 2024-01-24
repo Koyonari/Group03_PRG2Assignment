@@ -1,4 +1,15 @@
-﻿using ICTreatsSystem;
+﻿//==========================================================
+// Features: 1, 3, 4
+// Student Number : S10258126
+// Student Name : An Yong Shyan
+// Partner Name : Chan Man Lock Jake
+//==========================================================
+// Features: 2, 5, 6
+// Student Number : S10255965
+// Student Name : Chan Man Lock Jake
+// Partner Name : An Yong Shyan
+//==========================================================
+using ICTreatsSystem;
 
 string customerFile = "customers.csv";
 string orderFile = "orders.csv";
