@@ -53,7 +53,7 @@
 
         public override string ToString()
         {
-            return $"Points: {Points} PunchCard: {PunchCard} Tier: {Tier}";
+            return $"{Tier,-17}{Points,-17}{PunchCard}";
         }
     }
 }

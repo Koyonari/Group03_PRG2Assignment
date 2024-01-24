@@ -271,7 +271,7 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
         try
         {
             Console.Write("Enter your date of birth DD/MM/YYYY : ");
-            dob = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+            dob = DateTime.Parse(Console.ReadLine(), null);
             break;
         }
         catch
