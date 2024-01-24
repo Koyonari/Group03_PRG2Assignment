@@ -685,24 +685,27 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
 
     DisplayCurrentOrder(customerDict, customer_index); //Feature 5 - Display current order Method
 
-    Console.Write("\n" + edit_menu);
+    if (customerDict[customer_index].CurrentOrder != null)
+    { 
+        Console.Write("\n" + edit_menu);
 
-    int menu_opt = ValidateInt("\nSelect option : ", 3, false, 0);
+        int menu_opt = ValidateInt("\nSelect option : ", 3, false, 0);
 
-    switch (menu_opt)
-    {
-        case 1:
-            Option1(customerDict, customer_index);
-            break;
-        case 2:
-            Option2(customerDict, customer_index);
-            break;
-        case 3:
-            Option3(customerDict, customer_index);
-            break;
+        switch (menu_opt)
+        {
+            case 1:
+                Option1(customerDict, customer_index);
+                break;
+            case 2:
+                Option2(customerDict, customer_index);
+                break;
+            case 3:
+                Option3(customerDict, customer_index);
+                break;
+        }
+
+        DisplayCurrentOrder(customerDict, customer_index); //Feature 5 - Display current order Method
     }
-
-    DisplayCurrentOrder(customerDict, customer_index); //Feature 5 - Display current order Method
 }
 
 //Main Program
