@@ -209,16 +209,26 @@ void ListAllCurrentOrders(Dictionary<int, Customer> customerDict, Queue<Order> g
         Console.WriteLine("Gold member queue:");
         foreach (Order i in gold_queue)
         {
+            foreach (KeyValuePair<int, Customer> j in customerDict)
+            {
+                if (j.Value.CurrentOrder != null && j.Value.CurrentOrder.Id == i.Id) Console.WriteLine("Customer ID : " + j.Key);
+            }
             Console.WriteLine(i);
         }
     }
     else Console.WriteLine("Gold member queue empty.");
+
+    Console.WriteLine();
 
     if (regular_queue.Count > 0) //checks for empty queue
     { 
         Console.WriteLine("Regular member queue:");
         foreach (Order i in regular_queue)
         {
+            foreach (KeyValuePair<int, Customer> j in customerDict)
+            {
+                if (j.Value.CurrentOrder != null && j.Value.CurrentOrder.Id == i.Id) Console.WriteLine("Customer ID : " + j.Key);
+            }
             Console.WriteLine(i);
         }
     }
