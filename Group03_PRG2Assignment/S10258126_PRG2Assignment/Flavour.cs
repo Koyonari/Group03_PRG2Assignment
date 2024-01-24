@@ -20,14 +20,8 @@ namespace S10258126_PRG2Assignment
         }
         public override string ToString()
         {
-            if (Premium)
-            {
-                return $"{Quantity} Premium {Type}";
-            }
-            else
-            {
-                return $"{Quantity} Ordinary {Type}";
-            }
+            if (Premium == true) return $" {Quantity} Premium {Type}";
+            else return $" {Quantity} Ordinary {Type}";
         }
 
     }

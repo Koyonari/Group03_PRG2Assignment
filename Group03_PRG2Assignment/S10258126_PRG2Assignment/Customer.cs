@@ -39,8 +39,7 @@ namespace S10258126_PRG2Assignment
 
         public override string ToString()
         {
-            //Format date of birth to dd/mm/yyyy
-            return $"{Name,-10}{MemberId,-10}{Dob.ToString("dd/MM/yyyy"),-12}";
+            return $"{Name,-10}{MemberId,-10}{Dob.ToString("dd/MM/yyyy"),-12}{Rewards}";
         }
     }
 }
