@@ -18,6 +18,7 @@ void ExtractCustomer(string filename) //Reads File, Creates objects
         {
             Customer customer = new Customer(customer_details[0], Convert.ToInt32(customer_details[1]), Convert.ToDateTime(customer_details[2])); //Creates Customer Object
             customer.Rewards = new PointCard(Convert.ToInt32(customer_details[4]), Convert.ToInt32(customer_details[5])); ////Create PointCard object in Customer object
+            customer.Rewards.Tier = customer_details[3];
             customerDict.Add(customer.MemberId, customer); //Adds Customer Object to Dictionary
         }
     }
@@ -178,7 +179,7 @@ int ValidateUserID(Dictionary<int, Customer> customerDict)
             {
                 bool inside = customerDict.ContainsKey(customer_index);
                 if (inside == true) break;
-                else Console.WriteLine("Invalid ID. ID not in database.4");
+                else Console.WriteLine("Invalid ID. ID not in database.");
             }
             else Console.WriteLine("Invalid ID.");
         }
@@ -227,20 +228,53 @@ void ListAllCurrentOrders(Dictionary<int, Customer> customerDict, Queue<Order> g
 //Feature 3 - Register new customers and store data in csv file
 void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename)
 {
+    //Get account name
     Console.Write("Enter your name : ");
     string name = Console.ReadLine();
 
-    Console.Write("Enter your ID : ");
-    int id = Convert.ToInt32(Console.ReadLine());
+    //Get account ID
+    int id;
+    while (true)
+    {
+        try
+        {
+            Console.Write("\nEnter your ID : ");
+            id = Convert.ToInt32(Console.ReadLine());
+            if (Convert.ToString(id).Length == 6)
+            {
+                bool inside = customerDict.ContainsKey(id);
+                if (inside == false) break;
+                else Console.WriteLine("Invalid ID. ID in database.");
+            }
+            else Console.WriteLine("Invalid ID. Please input a 6-digit number.");
+        }
+        catch
+        {
+            Console.WriteLine("Invalid Input. Please input a 6-digit number.");
+        }
+    }
 
-    Console.Write("Enter your date of birth DD/MM/YYYY : ");
-    DateTime dob = DateTime.ParseExact(Console.ReadLine(),"dd/MM/yyyy" , null);
+    //Get user DoB
+    DateTime dob;
+    while (true)
+    {
+        try
+        {
+            Console.Write("Enter your date of birth DD/MM/YYYY : ");
+            dob = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+            break;
+        }
+        catch
+        {
+            Console.WriteLine("Invalid Input.");
+        }
+    }
 
     Customer customer = new Customer(name, id, dob); //Create Customer object
     customer.Rewards = new PointCard(); //Create PointCard object in Customer object
     customerDict.Add(customer.MemberId, customer); //Add Customer to customer dictionary
 
-    string updatefile = $"{customer.Name},{Convert.ToInt32(customer.MemberId)},{customer.Dob.ToString("dd/MM/yyyy")}";
+    string updatefile = $"{customer.Name},{Convert.ToInt32(customer.MemberId)},{customer.Dob.ToString("dd/MM/yyyy")},{customer.Rewards.Tier},{customer.Rewards.Points},{customer.Rewards.PunchCard}";
 
     using (StreamWriter sw = File.AppendText(filename)) //Update csv file with new customer data
     {
