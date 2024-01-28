@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Nq8i+6jwxSioUGbbMrjtuoWZMzJ/zoRIwY9wv85HNMYBurZsYD4q+XnswzlAl6hz6PU71VWSDs1XNjHaX/x+FA==",
+  "dgSpecHash": "yIY17txEUYus0KZYSoieiYu7oWJgRRdrnN0bwPoK0LyFekMCEkrwClCYhkhGfK7bAKvwW1EM7hmonzc/cwpZFw==",
   "success": true,
-  "projectFilePath": "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment\\Group03_PRG2Assignment\\Group03_PRG2Assignment\\S10258126_PRG2Assignment\\S10258126_PRG2Assignment.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Ngee Ann\\Semester 2\\Programming 2\\Assignment1.2\\Group03_PRG2Assignment\\S10258126_PRG2Assignment\\S10258126_PRG2Assignment.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\anyon\\.nuget\\packages\\spectre.console\\0.48.0\\spectre.console.0.48.0.nupkg.sha512",
+    "C:\\Users\\anyon\\.nuget\\packages\\spectre.console.cli\\0.48.0\\spectre.console.cli.0.48.0.nupkg.sha512",
+    "C:\\Users\\anyon\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512"
+  ],
   "logs": []
 }

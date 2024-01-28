@@ -10,6 +10,7 @@
 // Partner Name : An Yong Shyan
 //==========================================================
 
+using Spectre.Console;
 using S10258126_PRG2Assignment;
 
 string customerFile = "customers.csv";
@@ -18,6 +19,59 @@ Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>(); //Crea
 Queue<Order> gold_queue = new Queue<Order>();
 Queue<Order> regular_queue = new Queue<Order>();
 int orderID = 0;
+
+//Display Menu Method
+int DisplayMenu()
+{
+    string choice = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("=== IceCream Menu ===")
+        .PageSize(10)
+        .AddChoices(new[] {
+            "[[1]] List all customers",
+            "[[2]] List all current orders",
+            "[[3]] Register a new customer",
+            "[[4]] Create customer order",
+            "[[5]] Display order details",
+            "[[6]] Modify order details",
+            "[[0]] Exit"
+    }));
+    return choice[2] - '0';
+}
+
+//Listing Customers - Feature 4
+int ListCustomers(Dictionary<int, Customer> customerDict)
+{
+    // Format customer information for display
+    List<string> customerChoices = new List<string>();
+    int index = 1;
+    foreach (KeyValuePair<int, Customer> customer in customerDict)
+    {
+        //If else to format the spacing according to the index
+        if (index < 10 && index > 0)
+        {
+            customerChoices.Add($"[[{index}]]    {customer.Value}");
+            index++;
+        }
+        else
+        {
+            customerChoices.Add($"[[{index}]]   {customer.Value}");
+            index++;
+        }
+    }
+
+    // Prompt the user to select a customer using AnsiConsole
+    string customerSelection = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title($"----------------------------------List of Customers----------------------------------\n\n{"  Number",-9}{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}")
+        .PageSize(10)
+        .AddChoices(customerChoices));
+
+    // Extract the customer index
+    int customerIndex = int.Parse(customerSelection.Substring(2, 1)) - 1;
+    int memberId = customerDict.ElementAt(customerIndex).Key;
+    return memberId;
+}
 
 void ExtractCustomer(string filename) //Reads File, Creates objects
 {
@@ -209,7 +263,7 @@ void ListAllCustomers(Dictionary<int, Customer> customerDict)
     Console.WriteLine($"{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}");
     foreach (KeyValuePair<int, Customer> customer in customerDict)
     {
-        Console.WriteLine($"{customer.Value}{customer.Value.Rewards.Tier,-17}{customer.Value.Rewards.Points,-17}{customer.Value.Rewards.PunchCard}");
+        Console.WriteLine($"{customer.Value}");
     }
 }
 
@@ -304,13 +358,29 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
     }
 }
 
+//Add Ice Cream Menu Method
+string AddIC()
+{
+    // Prompt the user to select a customer using AnsiConsole
+    string addic = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Add Another Ice Cream?--")
+        .PageSize(3)
+        .AddChoices(new[] {
+            "Yes",
+            "No"
+        }));
+
+    // Extract the customer index
+    if (addic == "Yes") return "y";
+    else return "n";
+}
+
 //Feature 4 - Create customer order
 void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 {
-    ListAllCustomers(customerDict); //Feature 1
-
     orderID++;
-    int customer_index = ValidateUserID(customerDict);
+    int customer_index = ListCustomers(customerDict);
 
     Order current_order = new Order(orderID, DateTime.Now); //Create Order object
 
@@ -325,7 +395,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 
         Console.WriteLine("\nIce Cream added to order.");
 
-        continue_order = ValidateBool("\nAdd another ice cream? y/n : ");
+        continue_order = AddIC();
 
         if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
     }
@@ -342,35 +412,62 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 //Cone Method
 bool Cone()
 {
-    string dipped = ValidateBool("\nAdd chocolate - dipped cone ? y / n : ");
+    string dipped = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("Add Chocolate-Dipped Cone?")
+        .PageSize(3)
+        .AddChoices(new[] {
+            "Yes",
+            "No"
+        }));
 
-    if (dipped == "y") return true;
+    if (dipped == "Yes") return true;
     else return false;
 }
 
 //Waffle Method
 string Waffle()
 {
-    string[] waffle_menu = { "Red velvet", "Charcoal", "Pandan" };
-    Console.WriteLine("\nAvailable waffle flavours: ");
+    string w_opt = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Available Waffle Flavours--")
+        .PageSize(3)
+        .AddChoices(new[] {
+        "[[1]] Red Velvet",
+        "[[2]] Charcoal",
+        "[[3]] Pandan"
+        }));
 
-    //Display Waffle flavours
-    for (int e = 0; e < waffle_menu.Length; e++)
-    {
-        Console.WriteLine($"[{e + 1}] {waffle_menu[e]}");
-    }
-    int w_opt = ValidateInt("\nSelect waffle flavour : ", 3, false, 1);
-
-    return waffle_menu[w_opt - 1];
+    return w_opt.Substring(5);
 }
+
+//Flavour Menu Method
+int Flavour_Menu()
+{
+    string flavour_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Available Ice Cream Flavours--")  // Removed "Flavours" from the title
+        .PageSize(6)
+        .AddChoices(new[] {
+            "[[1]] Vanilla",
+            "[[2]] Chocolate",
+            "[[3]] Strawberry",
+            "[[4]] Durian (Premium)",
+            "[[5]] Ube (Premium)",
+            "[[6]] Sea Salt (Premium)"
+        }));
+
+    // Extract the flavour index (no change here)
+    int flavourIndex = int.Parse(flavour_menu.Substring(2, 1)) + 1;
+    return flavourIndex;
+}
+
 
 //Flavour Method
 List<Flavour> Flavours(int scoops)
 {
     string[] flavour_menu = { "Vanilla", "Chocolate", "Strawberry", "Durian", "Ube", "Sea Salt" };
     List<Flavour> f_list = new List<Flavour>();
-
-    Console.Write("\n-Flavours-");
 
     //Loop for number of scoops
     for (int i = 0; i < scoops;)
@@ -380,14 +477,7 @@ List<Flavour> Flavours(int scoops)
         int quantity = 1;
 
         //Display Flavours
-        Console.WriteLine("\nAvailable Flavours: ");
-        for (int j = 0; j < flavour_menu.Length; j++)
-        {
-            if (j == 0) Console.WriteLine("Ordinary");
-            else if (j == 3) Console.WriteLine("Premium");
-            Console.WriteLine($"[{j + 1}] {flavour_menu[j]}");
-        }
-        int f_opt = ValidateInt("\nEnter flavour option : ", 6, false, 0);
+        int f_opt = Flavour_Menu();
 
         if (f_opt > 3 && f_opt < 7) premium = true; //Check if flavour selected is premium
         if (scoops == 1 || (i == 1 && scoops != 3) || (i == 2 && scoops == 3))
@@ -407,7 +497,7 @@ List<Flavour> Flavours(int scoops)
         }
         else
         {
-            quantity = ValidateInt("\nEnter scoops of flavour : ", scoops - i, false, 2);
+            quantity = Scoop_Menu();
 
             Flavour flavour = new Flavour(flavour_menu[f_opt - 1], premium, quantity);
             foreach (Flavour k in f_list)
@@ -426,6 +516,44 @@ List<Flavour> Flavours(int scoops)
     return f_list;
 }
 
+//Topping Menu Method
+int Topping_Menu()
+{
+    string topping_menu = AnsiConsole.Prompt(
+    new SelectionPrompt<string>()
+    .Title("--Available Toppings--")
+    .PageSize(4)
+    .AddChoices(new[]
+    {
+        "[[1]] Sprinkles",
+        "[[2]] Mochi",
+        "[[3]] Sago",
+        "[[4]] Oreos",
+
+    }));
+
+    // Extract the topping index
+    int toppingIndex = int.Parse(topping_menu.Substring(2, 1));
+    return toppingIndex;
+}
+
+bool Topping_Check()
+{
+    // Prompt the user to select a customer using AnsiConsole
+    string addt = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Add Toppings?--")
+        .PageSize(3)
+        .AddChoices(new[] {
+            "Yes",
+            "No"
+        }));
+
+    // Extract the customer index
+    if (addt == "Yes") return true;
+    else return false;
+}
+
 //Topping Method
 List<Topping> Toppings()
 {
@@ -441,25 +569,59 @@ List<Topping> Toppings()
             Console.WriteLine("Topping limit reached.");
             break;
         }
-        string continue_topping = ValidateBool("Add toppings? y/n : ");
+        bool continue_topping = Topping_Check();
 
-        if (continue_topping == "n") break; //Check if user wants to add toppings
-        else if (continue_topping == "y")
+        if (continue_topping == false) break; //Check if user wants to add toppings
+        else if (continue_topping == true)
         {
             //Display Toppings
-            Console.WriteLine("\nAvailable Toppings:");
-            for (int i = 0; i < topping_menu.Length; i++)
-            {
-                Console.WriteLine($"[{i + 1}] {topping_menu[i]}");
-            }
-
-            int t_opt = ValidateInt("\nEnter topping option : ", 4, false, 0);
+            int t_opt = Topping_Menu();
 
             Topping topping = new Topping(topping_menu[t_opt - 1]);
             t_list.Add(topping);
         }
     }
     return t_list;
+}
+
+//IceCream Menu Method
+int IceCream_Menu()
+{
+    string iceCream_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Available Types--")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] Cup",
+            "[[2]] Cone",
+            "[[3]] Waffle"
+        }));
+
+    // Extract the flavour index
+    int iceCreamIndex = int.Parse(iceCream_menu.Substring(2, 1));
+
+    return iceCreamIndex;
+}
+
+//Scoops Menu Method
+int Scoop_Menu()
+{
+    string scoop_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Number of Scoops--")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] One",
+            "[[2]] Two",
+            "[[3]] Three"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+
+    return scoopIndex;
 }
 
 //IceCream Method
@@ -472,23 +634,14 @@ IceCream CreateIceCream()
 
     Console.WriteLine("\n-Type-");
 
-    //Display Option
-    Console.WriteLine("Avilable types:");
-    for (int i = 0; i < option_menu.Length; i++)
-    {
-        Console.WriteLine($"[{i + 1}] {option_menu[i]}");
-    }
-
     //Option
-    int option = ValidateInt("\nEnter option : ", 3, false, 0);
+    int option = IceCream_Menu();
 
     if (option == 2) dipped = Cone();
     else if (option == 3) waffle = Waffle();
 
     //Scoops
-    Console.Write("\n-Scoops-");
-
-    int scoops = ValidateInt("\nEnter number of scoops : ", 3, false, 2);
+    int scoops = Scoop_Menu();
 
     //Flavours & Toppings
     List<Flavour> f_list = Flavours(scoops);
@@ -513,9 +666,7 @@ IceCream CreateIceCream()
 //Feature 5
 void DisplayOrderDetails(Dictionary<int, Customer> customerDict)
 {
-    ListAllCustomers(customerDict); //Feature 1
-
-    int customer_index = ValidateUserID(customerDict);
+    int customer_index = ListCustomers(customerDict);
 
     Console.WriteLine();
 
@@ -600,21 +751,35 @@ void DisplayCurrentOrder(Dictionary<int, Customer> customerDict, int index)
     }
 }
 
+//Modify Ice Cream Menu Method
+int EditIC()
+{
+    string scoop_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Edit Ice Cream--")
+        .PageSize(4)
+        .AddChoices(new[]
+        {
+            "[[1]] Option",
+            "[[2]] Scoops",
+            "[[3]] Flavours",
+            "[[4]] Toppings"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+
+    return scoopIndex;
+}
+
 //Feature 6
 void Option1(Dictionary<int, Customer> customerDict, int index)
 {
-    string iceCream_menu =
-        "=== Edit Ice Cream ===\n" +
-        "[1] Option\n" +
-        "[2] Scoops\n" +
-        "[3] Flavours\n" +
-        "[4] Toppings";
-
     int m_opt = ValidateInt("\nSelect Ice Cream to modify : ", customerDict[index].CurrentOrder.IceCreamList.Count, false, 3);
 
-    Console.Write("\n" + iceCream_menu + "");
+    Console.WriteLine();
 
-    int i_opt = ValidateInt("\nSelect component to modify : ", 4, false, 0);
+    int i_opt = EditIC();
 
     IceCream modify_IceCream = customerDict[index].CurrentOrder.IceCreamList[m_opt - 1];
 
@@ -683,25 +848,34 @@ void Option3(Dictionary<int, Customer> customerDict, int index)
     else Console.WriteLine("You cannot have 0 ice creams in an order.");
 }
 
+//Modify Menu Method
+int ModifyMenu()
+{
+    string flavour_menu = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("=== Edit Order Menu ===")
+            .PageSize(6)
+            .AddChoices(new[] {
+                "[[1]] Modify Ice Cream",
+                "[[2]] Add Ice Cream",
+                "[[3]] Delete Ice Cream"
+            }));
+
+    // Extract the flavour index
+    int flavourIndex = int.Parse(flavour_menu.Substring(2, 1));
+
+    return flavourIndex;
+}
+
 void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
 {
-    string edit_menu =
-        "=== Edit Order Menu ===\n" +
-        "[1] Modify Ice Cream\n" +
-        "[2] Add Ice Cream\n" +
-        "[3] Delete Ice Cream\n";
-
-    ListAllCustomers(customerDict); //Feature 1
-
-    int customer_index = ValidateUserID(customerDict);
+    int customer_index = ListCustomers(customerDict);
 
     DisplayCurrentOrder(customerDict, customer_index); //Feature 5 - Display current order Method
 
     if (customerDict[customer_index].CurrentOrder != null)
     {
-        Console.Write("\n" + edit_menu);
-
-        int menu_opt = ValidateInt("\nSelect option : ", 3, false, 0);
+        int menu_opt = ModifyMenu();
 
         switch (menu_opt)
         {
@@ -726,23 +900,11 @@ ExtractOrder(orderFile, customerDict);
 
 while (true)
 {
-    string sys_menu =
-        "=== IceCream Menu ===\n" +
-        "[1] List all customers\n" +
-        "[2] List all current orders\n" +
-        "[3] Register a new customer\n" +
-        "[4] Create customer order\n" +
-        "[5] Display order details\n" +
-        "[6] Modify order details\n" +
-        "[0] Exit system";
-
-    Console.WriteLine(sys_menu);
-
-    int menu_opt = ValidateInt("\nSelect option : ", 6, true, 0);
+    int menu_opt = DisplayMenu();
 
     if (menu_opt == 0)
     {
-        Console.WriteLine("Exited.");
+        Console.WriteLine("Exited...");
         break;
     }
 
