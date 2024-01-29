@@ -142,6 +142,9 @@ int ValidateInt(string text, int range, bool allowzero, int methodID)
                 case 3:
                     Console.WriteLine("Option not in order.");
                     break;
+                case 4:
+                    Console.WriteLine("Invalid number of points.");
+                    break;
             }
         }
         catch
@@ -311,31 +314,39 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
     orderID++;
     int customer_index = ValidateUserID(customerDict);
 
-    Order current_order = new Order(orderID, DateTime.Now); //Create Order object
-
-    while (true)
+    if (customerDict[customer_index].CurrentOrder != null && customerDict[customer_index].CurrentOrder.TimeFulfilled == null)
     {
-        string continue_order;
-
-        IceCream iceCream = CreateIceCream(); //Create IceCream object via IceCream Method
-        current_order.AddIceCream(iceCream); //Add IceCream object to IceCreamList attribute Order object
-
-        customerDict[customer_index].CurrentOrder = current_order; //Add Order object to CurrentOrder attribute in Customer object
-
-        Console.WriteLine("\nIce Cream added to order.");
-
-        continue_order = ValidateBool("\nAdd another ice cream? y/n : ");
-
-        if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+        Console.WriteLine("Previous Order not fulfilled.");
     }
+    else
+    {
+        Order new_order = new Order(orderID, DateTime.Now); //Create Order object
+        Order current_order = customerDict[customer_index].MakeOrder(); //Initialise CurrentOrder in Customer Class
 
-    customerDict[customer_index].OrderHistory.Add(current_order); //Add Order to OrderHistory attribute in Customer object
+        while (true)
+        {
+            //string continue_order;
 
-    //Queue orders
-    if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(current_order);
-    else regular_queue.Enqueue(current_order);
+            IceCream iceCream = CreateIceCream(); //Create IceCream object via IceCream Method
+            new_order.AddIceCream(iceCream); //Add IceCream object to IceCreamList attribute Order object
 
-    Console.WriteLine("Order successfully made.\n");
+            current_order = new_order; //Add Order object to CurrentOrder attribute in Customer object
+
+            Console.WriteLine("\nIce Cream added to order.");
+
+            string continue_order = ValidateBool("\nAdd another ice cream? y/n : ");
+
+            if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+        }
+
+        customerDict[customer_index].CurrentOrder = current_order; //Add Order to CurrentORder attribute in Customer object
+
+        //Queue orders
+        if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(new_order);
+        else regular_queue.Enqueue(new_order);
+
+        Console.WriteLine("Order successfully made.\n");
+    }
 }
 
 //Cone Method
@@ -350,7 +361,7 @@ bool Cone()
 //Waffle Method
 string Waffle()
 {
-    string[] waffle_menu = { "Red velvet", "Charcoal", "Pandan" };
+    string[] waffle_menu = { "Red velvet", "Charcoal", "Pandan", "Original" };
     Console.WriteLine("\nAvailable waffle flavours: ");
 
     //Display Waffle flavours
@@ -358,7 +369,7 @@ string Waffle()
     {
         Console.WriteLine($"[{e + 1}] {waffle_menu[e]}");
     }
-    int w_opt = ValidateInt("\nSelect waffle flavour : ", 3, false, 1);
+    int w_opt = ValidateInt("\nSelect waffle flavour : ", 4, false, 1);
 
     return waffle_menu[w_opt - 1];
 }
@@ -719,6 +730,117 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
     }
 }
 
+//Option 7
+void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> gold_queue, Queue<Order> regular_queue)
+{
+    Order? order;
+    double total = 0;
+    bool isbday;
+    Customer customer = new Customer();
+    List<double> cost = new List<double>();
+    while (true)
+    {
+        if (gold_queue.Count != 0)
+        {
+            order = gold_queue.Dequeue();
+            foreach (IceCream i in order.IceCreamList)
+            {
+                Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
+                //total += i.CalculatePrice();
+                cost.Add(i.CalculatePrice());
+            }
+        }
+        else
+        {
+            Console.WriteLine("Gold queue is empty.");
+            if (regular_queue.Count != 0)
+            {
+                order = regular_queue.Dequeue();
+                foreach (IceCream i in order.IceCreamList)
+                {
+                    Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
+                    //total += i.CalculatePrice();
+                    cost.Add(i.CalculatePrice());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Regular queue is empty.");
+                break;
+            }
+        }
+        //Console.WriteLine($"Total bill amount : ${total.ToString("0.00")}");
+
+        foreach (KeyValuePair<int, Customer> kvp in customerDict)
+        {
+            if (kvp.Value.CurrentOrder != null && kvp.Value.CurrentOrder.Id == order.Id)
+            {
+                customer = kvp.Value;
+                Console.WriteLine($"{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}");
+                Console.WriteLine(customer);
+                if (customer.IsBirthday() == true)
+                {
+                    Console.WriteLine("It's your birthday!");
+                    for (int i = 0; i < cost.Count; i++)
+                    {
+                        if (cost[i] == cost.Max())
+                        {
+                            cost[i] = 0;
+                            break;
+                        }
+                    }
+                }           
+                break;
+            }
+        }
+        if (customer.Rewards.PunchCard == 10)
+        {
+            if (cost[0] != 0) cost[0] = 0;
+            else if (cost.Count > 1) cost[1] = 0;
+        }
+        customer.Rewards.Punch();
+
+        foreach (double i in cost)
+            total += i;
+        Console.WriteLine($"Final bill : ${total:0.00}");
+
+        if (customer.Rewards.Tier != "Ordinary" && customer.Rewards.Points != 0)
+        {
+            string do_offset = ValidateBool("Redeem points to offset bill? y/n : ");
+            if (do_offset == "y")
+            {
+                int redeem_points = ValidateInt("Enter number of points to redeem  : ", customer.Rewards.Points, false, 4);
+                while (true)
+                {
+                    if (0.02 * redeem_points > total)
+                    {
+                        Console.WriteLine("Too many points used.");
+                        redeem_points = ValidateInt("Enter number of points to redeem  : ", customer.Rewards.Points, false, 4);
+                    }
+                    else break;
+                }
+          
+                double cost_offset = 0.02 * redeem_points;
+                Console.WriteLine($"Cost offset : ${cost_offset:0.00}");
+                total -= cost_offset;
+                customer.Rewards.RedeemPoints(redeem_points);
+            }
+        }
+        int points = Convert.ToInt32(Math.Floor(total * 0.72));
+        Console.WriteLine($"Points earned : ${points:0.00}");
+        customer.Rewards.AddPoints(points);
+
+        Console.WriteLine("Press any key to make payment . . .");
+        Console.ReadLine();
+
+        order.TimeFulfilled = DateTime.Now;
+        customer.CurrentOrder = null;
+        customer.OrderHistory.Add(order); //Add Order to OrderHistory attribute in Customer object
+
+        break;
+    }
+}
+
 //Main Program
 ExtractCustomer(customerFile);
 ExtractOrder(orderFile, customerDict);
@@ -733,11 +855,12 @@ while (true)
         "[4] Create customer order\n" +
         "[5] Display order details\n" +
         "[6] Modify order details\n" +
+        "[7] Order Checkout\n" +
         "[0] Exit system";
 
     Console.WriteLine(sys_menu);
 
-    int menu_opt = ValidateInt("\nSelect option : ", 6, true, 0);
+    int menu_opt = ValidateInt("\nSelect option : ", 7, true, 0);
 
     if (menu_opt == 0)
     {
@@ -768,6 +891,9 @@ while (true)
             break;
         case 6:
             ModifyOrderDetails(customerDict);
+            break;
+        case 7:
+            ProcessOrderCheckout(customerDict, gold_queue, regular_queue);
             break;
     }
 }

@@ -25,7 +25,6 @@ namespace ICTreatsSystem
             double topping_price = 0;
 
             //Calculate price for flavour and cone
-            option_price += 3; //Additional cost for waffle
             if (WaffleFlavour == "Red Velvet")
             {
                 option_price += 3;
@@ -37,6 +36,10 @@ namespace ICTreatsSystem
             else if (WaffleFlavour == "Pandan Waffle")
             {
                 option_price += 3;
+            }
+            else if (WaffleFlavour == "Original")
+            {
+                option_price += 0;
             }
 
             //Calculate price for number of scoops
