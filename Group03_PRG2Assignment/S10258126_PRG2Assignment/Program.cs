@@ -15,6 +15,9 @@ using S10258126_PRG2Assignment;
 
 string customerFile = "customers.csv";
 string orderFile = "orders.csv";
+string flavoursFile = "flavours.csv";
+string optionsFile = "options.csv";
+string toppingsFile = "toppings.csv";
 Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>(); //Create a Dictionary to store Customer Objects
 Queue<Order> gold_queue = new Queue<Order>();
 Queue<Order> regular_queue = new Queue<Order>();
@@ -34,6 +37,7 @@ int DisplayMenu()
             "[[4]] Create customer order",
             "[[5]] Display order details",
             "[[6]] Modify order details",
+            "[[8]] Calculate orders by year",
             "[[0]] Exit"
     }));
     return choice[2] - '0';
@@ -306,7 +310,7 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
 {
     //Get account name
     Console.Write("Enter your name : ");
-    string name = Console.ReadLine();
+    string name = Console.ReadLine().Trim();
 
     //Get account ID
     int id;
@@ -315,8 +319,9 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
         try
         {
             Console.Write("\nEnter your ID : ");
-            id = Convert.ToInt32(Console.ReadLine());
-            if (Convert.ToString(id).Length == 6)
+            string input_id = Console.ReadLine();
+            id = Convert.ToInt32(input_id);
+            if (input_id.Length == 6) //Check for the length of the input, used string input_id so that if it starts with 0 it is still 6 digits
             {
                 bool inside = customerDict.ContainsKey(id);
                 if (inside == false) break;
@@ -463,6 +468,7 @@ int Flavour_Menu()
 }
 
 
+
 //Flavour Method
 List<Flavour> Flavours(int scoops)
 {
@@ -497,7 +503,18 @@ List<Flavour> Flavours(int scoops)
         }
         else
         {
-            quantity = Scoop_Menu();
+            if (i == 0)
+            {
+                if (scoops == 3) quantity = Scoop_Menu();
+                else if (scoops == 2) quantity = Scoop_Menu2();
+                else if (scoops == 1) quantity = Scoop_Menu1();
+            }
+            //Check for the valid number of scoops
+            else
+            {
+                if (scoops - quantity == 2 && i > 0) quantity = Scoop_Menu2();
+                else if (scoops - quantity == 1 && i > 0) quantity = Scoop_Menu1();
+            }
 
             Flavour flavour = new Flavour(flavour_menu[f_opt - 1], premium, quantity);
             foreach (Flavour k in f_list)
@@ -623,6 +640,43 @@ int Scoop_Menu()
 
     return scoopIndex;
 }
+
+int Scoop_Menu2()
+{
+    string scoop_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Number of Scoops--")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] One",
+            "[[2]] Two"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+
+    return scoopIndex;
+}
+
+
+int Scoop_Menu1()
+{
+    string scoop_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Number of Scoops--")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] One"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+
+    return scoopIndex;
+}
+
 
 //IceCream Method
 IceCream CreateIceCream()
@@ -754,7 +808,7 @@ void DisplayCurrentOrder(Dictionary<int, Customer> customerDict, int index)
 //Modify Ice Cream Menu Method
 int EditIC()
 {
-    string scoop_menu = AnsiConsole.Prompt(
+    string edit_menu = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
         .Title("--Edit Ice Cream--")
         .PageSize(4)
@@ -767,7 +821,7 @@ int EditIC()
         }));
 
     // Extract the scoop index
-    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+    int scoopIndex = int.Parse(edit_menu.Substring(2, 1));
 
     return scoopIndex;
 }
@@ -894,6 +948,150 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
     }
 }
 
+//Advanced Feature B
+
+//Year Menu Method
+string YearMenu()
+{
+    string year_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("=== Display Monthly and Yearly Charges ===")
+        .PageSize(6)
+        .AddChoices(new[] {
+            "[[1]]  2024",
+            "[[2]]  2023",
+            "[[3]]  2022",
+            "[[4]]  2021",
+            "[[5]]  2020",
+            "[[6]]  2019",
+            "[[7]]  2018",
+            "[[8]]  2017",
+            "[[9]]  2016",
+            "[[10]] 2015",
+            "[[11]] 2014",
+        }));
+
+    // Extract the year directly from the selected option
+    string selectedYear = year_menu.Substring(6); // Get the year part (starting from index 5)
+    return selectedYear;
+}
+
+void CalculateYear(string filename)
+{
+    //Call Menu
+    string year = YearMenu();
+
+    //Make a new list for fulfilled orders and index list and price
+    List<string> fulfilled_list =  new List<string>();
+    List<int> index_list = new List<int>();
+    List<int> price_list = new List<int>();
+
+    //Read file
+    string[] lines = File.ReadAllLines(filename);
+    string[] flavours_lines = File.ReadAllLines(flavoursFile);
+    string[] options_lines = File.ReadAllLines(optionsFile);
+    string[] toppings_lines = File.ReadAllLines(toppingsFile);
+    
+    //Create dictionaries for flavours
+    Dictionary<string, string> flavourDict = new Dictionary<string, string>();
+    foreach (string f in flavours_lines)
+    {
+        string[] i = f.Split(',');
+        flavourDict.Add(i[0], i[1]);
+    }
+
+    //Create dictionaries for toppings
+    Dictionary<string, string> toppingDict = new Dictionary<string, string>();
+    foreach (string t in toppings_lines)
+    {
+        string[] i = t.Split(',');
+        flavourDict.Add(i[0], i[1]);
+    }
+
+    for (int i = 1; i < lines.Length; i++)
+    {
+        string[] data = lines[i].Split(',');
+        int data_year = DateTime.Parse(data[3]).Year;
+
+        if (data_year == Convert.ToInt32(year))
+        {
+            fulfilled_list.Add(lines[i]);  // Add the entire line to the list
+        }
+    }
+
+    //Loop through fulfilled orders to add up total price
+    int price = 0;
+    List<Order> order_list = new List<Order>();
+    foreach (string q in fulfilled_list)
+    {
+        string[] i = q.Split(',');
+        string[] iceCream = new string[] {i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13], i[14] };
+        foreach (string a in iceCream)
+        {
+            //Adds price of each flavour
+            if (flavourDict.ContainsKey(iceCream[4]))
+            {
+                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[4]]); // Access the value for the specific key
+                price += flavourPrice;
+            }
+            if (flavourDict.ContainsKey(iceCream[5]))
+            {
+                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[5]]);
+                price += flavourPrice;
+            }
+            if (flavourDict.ContainsKey(iceCream[6]))
+            {
+                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[6]]);
+                price += flavourPrice;
+            }
+
+            //Adds price of each topping
+            if (toppingDict.ContainsKey(iceCream[7]))
+            {
+                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[7]]);
+                price += toppingPrice;
+            }
+            if (toppingDict.ContainsKey(iceCream[8]))
+            {
+                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[8]]);
+                price += toppingPrice;
+            }
+            if (toppingDict.ContainsKey(iceCream[9]))
+            {
+                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[9]]);
+                price += toppingPrice;
+            }
+            if (toppingDict.ContainsKey(iceCream[10]))
+            {
+                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[10]]);
+                price += toppingPrice;
+            }
+
+            //Adds price of each option
+            foreach (string o in options_lines)
+            {
+                string options = $"{iceCream[0]},{iceCream[1]},{iceCream[2]},{iceCream[3]}";
+                if (options_lines.Contains(options))
+                {
+                    string[] oindex = options.Split(',');
+                    price += int.Parse(oindex[4]);
+                
+                }
+            }
+        }
+        Order order = new Order(Convert.ToInt32(i[0]), Convert.ToDateTime(i[2]));
+        order_list.Add(order);
+    }
+
+    Console.WriteLine("All orders in" + year + ": " + fulfilled_list.Count);
+    foreach (Order o in order_list)
+    {
+        Console.WriteLine(o);
+    }
+
+    Console.WriteLine($"\nTotal Price for {year}:  ${price}");
+}
+
 //Main Program
 ExtractCustomer(customerFile);
 ExtractOrder(orderFile, customerDict);
@@ -931,6 +1129,9 @@ while (true)
             break;
         case 6:
             ModifyOrderDetails(customerDict);
+            break;
+        case 8:
+            CalculateYear(orderFile);
             break;
     }
 }
