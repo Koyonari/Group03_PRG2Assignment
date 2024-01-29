@@ -1,4 +1,9 @@
-﻿namespace ICTreatsSystem
+﻿//==========================================================
+// Student Number : S10258126
+// Student Name : An Yong Shyan
+// Partner Name : Chan Man Lock Jake
+//==========================================================
+namespace ICTreatsSystem
 {
     abstract class IceCream
     {

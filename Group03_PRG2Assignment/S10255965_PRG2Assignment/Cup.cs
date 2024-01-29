@@ -15,14 +15,6 @@ namespace ICTreatsSystem
         {
             double cost = 0;
             //Price of cup Cup, Single 4.00 • Toppings(+$1 each), Double 5.50, Triple 6.50
-            if (base.Toppings.Count > 0)
-            {
-                cost += cost + (base.Toppings.Count() * 1);
-            }
-            foreach (Flavour f in base.Flavours)
-            {
-                if (f.Premium == true) cost += 2;
-            }
             switch (base.Scoops)
             {
                 case 1:
@@ -35,8 +27,17 @@ namespace ICTreatsSystem
                     cost = 6.50;
                     break;
             }
+            foreach (Flavour f in Flavours)
+            {
+                if (f.Premium == true) cost += 2;
+            }
+            if (Toppings.Count > 0)
+            {
+                cost += (Toppings.Count * 1);
+            }
             return cost;
         }
+
 
         public override string ToString()
         {

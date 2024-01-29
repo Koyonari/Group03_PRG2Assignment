@@ -37,20 +37,21 @@ namespace ICTreatsSystem
 
         public void RedeemPoints(int use_points)//Not Done
         {
-            if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
+            /*if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
             {
                 double cost_offset = use_points * 0.02;
                 if (Tier == "Gold")
                 {
                     int i = 0;
                 }
-            }
+            }*/
+            Points -= use_points;
         }
 
-        void punch()//Not Done
+        public void Punch()//Not Done
         {
             PunchCard++;
-            if (PunchCard == 10)
+            if (PunchCard == 11)
             {
                 PunchCard = 0;
             }
