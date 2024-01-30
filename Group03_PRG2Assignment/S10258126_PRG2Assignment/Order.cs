@@ -10,7 +10,7 @@ namespace S10258126_PRG2Assignment
     {
         public int Id { get; set; }
         public DateTime TimeReceived { get; set; }
-        public DateTime? TimeFulfilled { get; set; }
+        public DateTime? TimeFulfilled { get; set; } = null;
         public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
 
         public Order() { }
@@ -21,7 +21,7 @@ namespace S10258126_PRG2Assignment
             TimeReceived = input_timeReceived;
         }
 
-        public void ModifyIceCream(int iceCreamPos)
+        public void ModifyIceCream(int iceCreamPos) //Function Not Used
         {
             IceCream modify_IceCream = IceCreamList[iceCreamPos];
         }

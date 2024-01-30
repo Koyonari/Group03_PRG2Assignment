@@ -38,20 +38,21 @@ namespace S10258126_PRG2Assignment
 
         public void RedeemPoints(int use_points)//Requires advanced
         {
-            if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
+            /*if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
             {
                 double cost_offset = use_points * 0.02;
                 if (Tier == "Gold")
                 {
                     int i = 0;
                 }
-            }
+            }*/
+            Points -= use_points;
         }
 
-        void punch()//Requires advanced
+        public void Punch()
         {
             PunchCard++;
-            if (PunchCard == 10)
+            if (PunchCard == 11)
             {
                 PunchCard = 0;
             }

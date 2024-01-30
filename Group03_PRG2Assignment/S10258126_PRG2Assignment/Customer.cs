@@ -24,16 +24,17 @@ namespace S10258126_PRG2Assignment
             Dob = input_dob;
         }
 
-        public Order MakeOrder()
+        public Order MakeOrder() //Function not used
         {
-            CurrentOrder = new Order(Convert.ToInt32(DateTime.Now.ToString("HHss")), DateTime.Now);
-            OrderHistory.Add(CurrentOrder);
+            //CurrentOrder = new Order(Convert.ToInt32(DateTime.Now.ToString("HHss")),DateTime.Now);
+            //OrderHistory.Add(CurrentOrder);
+            CurrentOrder = new Order();
             return CurrentOrder;
         }
 
         public bool IsBirthday()
         {
-            if (DateTime.Today == Dob) return true;
+            if (DateTime.Today.AddYears(Dob.Year - DateTime.Today.Year) == Dob) return true;
             return false;
         }
 

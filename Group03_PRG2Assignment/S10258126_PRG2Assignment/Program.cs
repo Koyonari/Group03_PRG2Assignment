@@ -37,7 +37,8 @@ int DisplayMenu()
             "[[4]] Create customer order",
             "[[5]] Display order details",
             "[[6]] Modify order details",
-            "[[8]] Calculate orders by year",
+            "[[7]] Order Checkout",
+            "[[8]] Order price breakdown",
             "[[0]] Exit"
     }));
     return choice[2] - '0';
@@ -200,6 +201,9 @@ int ValidateInt(string text, int range, bool allowzero, int methodID)
                     break;
                 case 3:
                     Console.WriteLine("Option not in order.");
+                    break;
+                case 4:
+                    Console.WriteLine("Invalid number of points.");
                     break;
             }
         }
@@ -383,35 +387,41 @@ string AddIC()
 
 //Feature 4 - Create customer order
 void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
-{
+{   
     orderID++;
     int customer_index = ListCustomers(customerDict);
 
-    Order current_order = new Order(orderID, DateTime.Now); //Create Order object
-
-    while (true)
+    if (customerDict[customer_index].CurrentOrder != null && customerDict[customer_index].CurrentOrder.TimeFulfilled == null)
     {
-        string continue_order;
-
-        IceCream iceCream = CreateIceCream(); //Create IceCream object via IceCream Method
-        current_order.AddIceCream(iceCream); //Add IceCream object to IceCreamList attribute Order object
-
-        customerDict[customer_index].CurrentOrder = current_order; //Add Order object to CurrentOrder attribute in Customer object
-
-        Console.WriteLine("\nIce Cream added to order.");
-
-        continue_order = AddIC();
-
-        if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+        Console.WriteLine("Previous Order not fulfilled.");
     }
+    else
+    {
+        Order new_order = new Order(orderID, DateTime.Now); //Create Order object
+        Order current_order = customerDict[customer_index].MakeOrder(); //Initialise CurrentOrder in Customer Class
 
-    customerDict[customer_index].OrderHistory.Add(current_order); //Add Order to OrderHistory attribute in Customer object
+        while (true)
+        {
+            IceCream iceCream = CreateIceCream(); //Create IceCream object via IceCream Method
+            new_order.AddIceCream(iceCream); //Add IceCream object to IceCreamList attribute Order object
 
-    //Queue orders
-    if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(current_order);
-    else regular_queue.Enqueue(current_order);
+            current_order = new_order; //Add Order object to CurrentOrder attribute in Customer object
 
-    Console.WriteLine("Order successfully made.\n");
+            Console.WriteLine("\nIce Cream added to order.");
+
+            string continue_order = AddIC();
+
+            if (continue_order == "n") break; //Check if customer wants to continue adding more IceCream objects
+        }
+
+        customerDict[customer_index].CurrentOrder = current_order; //Add Order to CurrentORder attribute in Customer object
+
+        //Queue orders
+        if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(new_order);
+        else regular_queue.Enqueue(new_order);
+
+        Console.WriteLine("Order successfully made.\n");
+    }
 }
 
 //Cone Method
@@ -436,11 +446,12 @@ string Waffle()
     string w_opt = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
         .Title("--Available Waffle Flavours--")
-        .PageSize(3)
+        .PageSize(4)
         .AddChoices(new[] {
         "[[1]] Red Velvet",
         "[[2]] Charcoal",
-        "[[3]] Pandan"
+        "[[3]] Pandan",
+        "[[4]] Original"
         }));
 
     return w_opt.Substring(5);
@@ -908,7 +919,7 @@ int ModifyMenu()
     string flavour_menu = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title("=== Edit Order Menu ===")
-            .PageSize(6)
+            .PageSize(3)
             .AddChoices(new[] {
                 "[[1]] Modify Ice Cream",
                 "[[2]] Add Ice Cream",
@@ -948,15 +959,145 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
     }
 }
 
-//Advanced Feature B
+//Advanced Features
+//Option 7
 
+//Process Order Checkout Menu
+string ProcessOrderMenu()
+{
+    string process_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("=== Redeem Points to Offset Order ===")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] Yes",
+            "[[2]] No"
+        }));
+
+    if (process_menu == "Yes") return "y";
+    else return "n";
+}
+
+void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> gold_queue, Queue<Order> regular_queue)
+{
+    Order? order;
+    double total = 0;
+    bool isbday;
+    Customer customer = new Customer();
+    List<double> cost = new List<double>();
+    while (true)
+    {
+        if (gold_queue.Count != 0)
+        {
+            order = gold_queue.Dequeue();
+            foreach (IceCream i in order.IceCreamList)
+            {
+                Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
+                //total += i.CalculatePrice();
+                cost.Add(i.CalculatePrice());
+            }
+        }
+        else
+        {
+            Console.WriteLine("Gold queue is empty.");
+            if (regular_queue.Count != 0)
+            {
+                order = regular_queue.Dequeue();
+                foreach (IceCream i in order.IceCreamList)
+                {
+                    Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
+                    //total += i.CalculatePrice();
+                    cost.Add(i.CalculatePrice());
+                }
+            }
+            else
+            {
+                Console.WriteLine("Regular queue is empty.");
+                break;
+            }
+        }
+        //Console.WriteLine($"Total bill amount : ${total.ToString("0.00")}");
+
+        foreach (KeyValuePair<int, Customer> kvp in customerDict)
+        {
+            if (kvp.Value.CurrentOrder != null && kvp.Value.CurrentOrder.Id == order.Id)
+            {
+                customer = kvp.Value;
+                Console.WriteLine($"\n{"Name",-10}{"MemberId",-10}{"DateOfBirth",-12}{"MembershipStatus",-17}{"MembershipPoints",-17}{"PunchCard"}");
+                Console.WriteLine(customer);
+                Console.WriteLine();
+                if (customer.IsBirthday() == true)
+                {
+                    Console.WriteLine("It's your birthday!");
+                    for (int i = 0; i < cost.Count; i++)
+                    {
+                        if (cost[i] == cost.Max())
+                        {
+                            cost[i] = 0;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        if (customer.Rewards.PunchCard == 10)
+        {
+            if (cost[0] != 0) cost[0] = 0;
+            else if (cost.Count > 1) cost[1] = 0;
+        }
+        customer.Rewards.Punch();
+
+        foreach (double i in cost)
+            total += i;
+        Console.WriteLine($"Final bill : ${total:0.00}");
+
+        if (customer.Rewards.Tier != "Ordinary" && customer.Rewards.Points != 0)
+        {
+            string do_offset = ProcessOrderMenu();
+            if (do_offset == "y")
+            {
+                int redeem_points = ValidateInt("Enter number of points to redeem  : ", customer.Rewards.Points, false, 4);
+                while (true)
+                {
+                    if (0.02 * redeem_points > total)
+                    {
+                        Console.WriteLine("Too many points used.");
+                        redeem_points = ValidateInt("Enter number of points to redeem  : ", customer.Rewards.Points, false, 4);
+                    }
+                    else break;
+                }
+
+                double cost_offset = 0.02 * redeem_points;
+                Console.WriteLine($"Cost offset : ${cost_offset:0.00}");
+                total -= cost_offset;
+                customer.Rewards.RedeemPoints(redeem_points);
+            }
+        }
+        int points = Convert.ToInt32(Math.Floor(total * 0.72));
+        Console.WriteLine($"Points earned : ${points:0.00}");
+        customer.Rewards.AddPoints(points);
+
+        Console.WriteLine("Press any key to make payment . . .");
+        Console.ReadLine();
+
+        order.TimeFulfilled = DateTime.Now;
+        customer.CurrentOrder = null;
+        customer.OrderHistory.Add(order); //Add Order to OrderHistory attribute in Customer object
+
+        break;
+    }
+}
+
+//Option 8
 //Year Menu Method
 string YearMenu()
 {
     string year_menu = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
         .Title("=== Display Monthly and Yearly Charges ===")
-        .PageSize(6)
+        .PageSize(5)
         .AddChoices(new[] {
             "[[1]]  2024",
             "[[2]]  2023",
@@ -1021,6 +1162,7 @@ void CalculateYear(string filename)
         toppingDict.Add(i[0], i[1]);
     }
 
+    //Loop through orders to find fulfilled orders in the year
     for (int i = 1; i < lines.Length; i++)
     {
         string[] data = lines[i].Split(',');
@@ -1170,6 +1312,9 @@ while (true)
             break;
         case 6:
             ModifyOrderDetails(customerDict);
+            break;
+        case 7:
+            ProcessOrderCheckout(customerDict, gold_queue, regular_queue);
             break;
         case 8:
             CalculateYear(orderFile);
