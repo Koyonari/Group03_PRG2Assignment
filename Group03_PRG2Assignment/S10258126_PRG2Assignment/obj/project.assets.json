@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "Kurukuru/1.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/Kurukuru.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Kurukuru.dll": {}
+        }
+      },
       "Spectre.Console/0.48.0": {
         "type": "package",
         "dependencies": {
@@ -57,6 +66,20 @@
     }
   },
   "libraries": {
+    "Kurukuru/1.4.2": {
+      "sha512": "OpfXP8piJFx8hEG+z2Gw2/VWvj96RkzDvtjfAxJnZRuREDasW8Is9kjwm/E8oXmyq6TjSStBzkSwdAJLlqG3Dg==",
+      "type": "package",
+      "path": "kurukuru/1.4.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "kurukuru.1.4.2.nupkg.sha512",
+        "kurukuru.nuspec",
+        "lib/net45/Kurukuru.dll",
+        "lib/net5.0/Kurukuru.dll",
+        "lib/netstandard2.0/Kurukuru.dll"
+      ]
+    },
     "Spectre.Console/0.48.0": {
       "sha512": "4Mc1UT7Azgtyb8FyNwK5FZmoZbKuT5PmY7ZwaKUytjD5kGFMNBACpOZTwYtkuY377YkYtZYBeDDTJUwTW86QXw==",
       "type": "package",
@@ -135,6 +158,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Kurukuru >= 1.4.2",
       "Spectre.Console >= 0.48.0",
       "Spectre.Console.Cli >= 0.48.0"
     ]
@@ -183,6 +207,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Kurukuru": {
+            "target": "Package",
+            "version": "[1.4.2, )"
+          },
           "Spectre.Console": {
             "target": "Package",
             "version": "[0.48.0, )"
