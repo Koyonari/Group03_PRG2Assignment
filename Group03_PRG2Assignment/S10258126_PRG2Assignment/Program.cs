@@ -28,7 +28,7 @@ int DisplayMenu()
 {
     string choice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-        .Title("=== IceCream Menu ===")
+        .Title("\n=== IceCream Menu ===")
         .PageSize(10)
         .AddChoices(new[] {
             "[[1]] List all customers",
@@ -55,7 +55,7 @@ int ListCustomers(Dictionary<int, Customer> customerDict)
         //If else to format the spacing according to the index
         if (index < 10 && index > 0)
         {
-            customerChoices.Add($"[[{index}]]    {customer.Value}");
+            customerChoices.Add($"[[{"0" + index}]]   {customer.Value}");
             index++;
         }
         else
@@ -73,7 +73,7 @@ int ListCustomers(Dictionary<int, Customer> customerDict)
         .AddChoices(customerChoices));
 
     // Extract the customer index
-    int customerIndex = int.Parse(customerSelection.Substring(2, 1)) - 1;
+    int customerIndex = int.Parse(customerSelection.Substring(2, 2)) - 1;
     int memberId = customerDict.ElementAt(customerIndex).Key;
     return memberId;
 }
@@ -313,7 +313,7 @@ void ListAllCurrentOrders(Dictionary<int, Customer> customerDict, Queue<Order> g
 void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename)
 {
     //Get account name
-    Console.Write("Enter your name : ");
+    Console.Write("Enter your name: ");
     string name = Console.ReadLine().Trim();
 
     //Get account ID
@@ -322,7 +322,7 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
     {
         try
         {
-            Console.Write("\nEnter your ID : ");
+            Console.Write("\nEnter your ID: ");
             string input_id = Console.ReadLine();
             id = Convert.ToInt32(input_id);
             if (input_id.Length == 6) //Check for the length of the input, used string input_id so that if it starts with 0 it is still 6 digits
@@ -367,24 +367,6 @@ void RegisterNewCustomer(Dictionary<int, Customer> customerDict, string filename
     }
 }
 
-//Add Ice Cream Menu Method
-string AddIC()
-{
-    // Prompt the user to select a customer using AnsiConsole
-    string addic = AnsiConsole.Prompt(
-        new SelectionPrompt<string>()
-        .Title("--Add Another Ice Cream?--")
-        .PageSize(3)
-        .AddChoices(new[] {
-            "Yes",
-            "No"
-        }));
-
-    // Extract the customer index
-    if (addic == "Yes") return "y";
-    else return "n";
-}
-
 //Feature 4 - Create customer order
 void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
 {   
@@ -420,8 +402,30 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
         if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(new_order);
         else regular_queue.Enqueue(new_order);
 
+        //Append to orders csv
+
+
+        //Indicate that order has been made successfully
         Console.WriteLine("Order successfully made.\n");
     }
+}
+
+//Add Ice Cream Menu Method
+string AddIC()
+{
+    // Prompt the user to select a customer using AnsiConsole
+    string addic = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Add Another Ice Cream--")
+        .PageSize(3)
+        .AddChoices(new[] {
+            "Yes",
+            "No"
+        }));
+
+    // Extract the customer index
+    if (addic == "Yes") return "y";
+    else return "n";
 }
 
 //Cone Method
@@ -429,7 +433,7 @@ bool Cone()
 {
     string dipped = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-        .Title("Add Chocolate-Dipped Cone?")
+        .Title("--Add Chocolate-Dipped Cone--")
         .PageSize(3)
         .AddChoices(new[] {
             "Yes",
@@ -570,7 +574,7 @@ bool Topping_Check()
     // Prompt the user to select a customer using AnsiConsole
     string addt = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-        .Title("--Add Toppings?--")
+        .Title("--Add Toppings--")
         .PageSize(3)
         .AddChoices(new[] {
             "Yes",
@@ -587,8 +591,6 @@ List<Topping> Toppings()
 {
     string[] topping_menu = { "Sprinkles", "Mochi", "Sago", "Oreos" };
     List<Topping> t_list = new List<Topping>();
-
-    Console.WriteLine("\n-Toppings-");
 
     while (true)
     {
@@ -633,7 +635,27 @@ int IceCream_Menu()
 }
 
 //Scoops Menu Method
-int Scoop_Menu()
+int Scoop_Menu_Total()
+{
+    string scoop_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Total Number of Scoops--")
+        .PageSize(3)
+        .AddChoices(new[]
+        {
+            "[[1]] One",
+            "[[2]] Two",
+            "[[3]] Three"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(scoop_menu.Substring(2, 1));
+
+    return scoopIndex;
+}
+
+    //Scoops Menu Method
+    int Scoop_Menu()
 {
     string scoop_menu = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
@@ -697,8 +719,6 @@ IceCream CreateIceCream()
     bool dipped = false;
     string waffle = "";
 
-    Console.WriteLine("\n-Type-");
-
     //Option
     int option = IceCream_Menu();
 
@@ -706,7 +726,7 @@ IceCream CreateIceCream()
     else if (option == 3) waffle = Waffle();
 
     //Scoops
-    int scoops = Scoop_Menu();
+    int scoops = Scoop_Menu_Total();
 
     //Flavours & Toppings
     List<Flavour> f_list = Flavours(scoops);
@@ -816,27 +836,6 @@ void DisplayCurrentOrder(Dictionary<int, Customer> customerDict, int index)
     }
 }
 
-//Modify Ice Cream Menu Method
-int EditIC()
-{
-    string edit_menu = AnsiConsole.Prompt(
-        new SelectionPrompt<string>()
-        .Title("--Edit Ice Cream--")
-        .PageSize(4)
-        .AddChoices(new[]
-        {
-            "[[1]] Option",
-            "[[2]] Scoops",
-            "[[3]] Flavours",
-            "[[4]] Toppings"
-        }));
-
-    // Extract the scoop index
-    int scoopIndex = int.Parse(edit_menu.Substring(2, 1));
-
-    return scoopIndex;
-}
-
 //Feature 6
 void Option1(Dictionary<int, Customer> customerDict, int index)
 {
@@ -913,6 +912,27 @@ void Option3(Dictionary<int, Customer> customerDict, int index)
     else Console.WriteLine("You cannot have 0 ice creams in an order.");
 }
 
+//Modify Ice Cream Menu Method
+int EditIC()
+{
+    string edit_menu = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+        .Title("--Edit Ice Cream--")
+        .PageSize(4)
+        .AddChoices(new[]
+        {
+            "[[1]] Option",
+            "[[2]] Scoops",
+            "[[3]] Flavours",
+            "[[4]] Toppings"
+        }));
+
+    // Extract the scoop index
+    int scoopIndex = int.Parse(edit_menu.Substring(2, 1));
+
+    return scoopIndex;
+}
+
 //Modify Menu Method
 int ModifyMenu()
 {
@@ -960,7 +980,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
 }
 
 //Advanced Features
-//Option 7
+//Feature 7
 
 //Process Order Checkout Menu
 string ProcessOrderMenu()
@@ -974,9 +994,8 @@ string ProcessOrderMenu()
             "[[1]] Yes",
             "[[2]] No"
         }));
-
-    if (process_menu == "Yes") return "y";
-    else return "n";
+    
+    if (process_menu == "[[1]] Yes") return "y"; else return "n";
 }
 
 void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> gold_queue, Queue<Order> regular_queue)
@@ -994,7 +1013,6 @@ void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> g
             foreach (IceCream i in order.IceCreamList)
             {
                 Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
-                //total += i.CalculatePrice();
                 cost.Add(i.CalculatePrice());
             }
         }
@@ -1007,7 +1025,6 @@ void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> g
                 foreach (IceCream i in order.IceCreamList)
                 {
                     Console.WriteLine($"{"-"}{i} ${i.CalculatePrice().ToString("0.00")}");
-                    //total += i.CalculatePrice();
                     cost.Add(i.CalculatePrice());
                 }
             }
@@ -1017,7 +1034,6 @@ void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> g
                 break;
             }
         }
-        //Console.WriteLine($"Total bill amount : ${total.ToString("0.00")}");
 
         foreach (KeyValuePair<int, Customer> kvp in customerDict)
         {
@@ -1076,11 +1092,27 @@ void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> g
             }
         }
         int points = Convert.ToInt32(Math.Floor(total * 0.72));
-        Console.WriteLine($"Points earned : ${points:0.00}");
+        Console.WriteLine($"Points earned : ${points}");
         customer.Rewards.AddPoints(points);
 
         Console.WriteLine("Press any key to make payment . . .");
         Console.ReadLine();
+
+        //Play a payment animation
+        AnsiConsole.Status()
+            .Start("Processing payment...", ctx =>
+            {
+                //Delay for 1.5 seconds
+                Thread.Sleep(1500);
+
+                //Update the spinner status and color
+                ctx.Status("Payment successful!");
+                ctx.SpinnerStyle(Style.Parse("green"));
+
+                //Prompt user to press enter to continue
+                AnsiConsole.WriteLine("Press Enter to continue...");
+                Console.ReadLine();
+            });
 
         order.TimeFulfilled = DateTime.Now;
         customer.CurrentOrder = null;
@@ -1090,7 +1122,7 @@ void ProcessOrderCheckout(Dictionary<int, Customer> customerDict, Queue<Order> g
     }
 }
 
-//Option 8
+//Feature 8
 //Year Menu Method
 string YearMenu()
 {
@@ -1110,6 +1142,10 @@ string YearMenu()
             "[[9]]  2016",
             "[[10]] 2015",
             "[[11]] 2014",
+            "[[12]] 2013",
+            "[[13]] 2012",
+            "[[14]] 2011",
+            "[[15]] 2010"
         }));
 
     // Extract the year directly from the selected option
@@ -1124,21 +1160,22 @@ void CalculateYear(string filename)
 
     //Make a new list for fulfilled orders and montly price dictionary
     List<string> fulfilled_list =  new List<string>();
-    Dictionary<string, double> monthly = new Dictionary<string, double>(12);
-
-    //Add key months to dictionary
-    monthly.Add("January", 0);
-    monthly.Add("February", 0);
-    monthly.Add("March", 0);
-    monthly.Add("April", 0);
-    monthly.Add("May", 0);
-    monthly.Add("June", 0);
-    monthly.Add("July", 0);
-    monthly.Add("August", 0);
-    monthly.Add("September", 0);
-    monthly.Add("October", 0);
-    monthly.Add("November", 0);
-    monthly.Add("December", 0);
+    Dictionary<string, double> monthly = new Dictionary<string, double>(12)
+    {
+        //Add key months to dictionary
+        { "January", 0 },
+        { "February", 0 },
+        { "March", 0 },
+        { "April", 0 },
+        { "May", 0 },
+        { "June", 0 },
+        { "July", 0 },
+        { "August", 0 },
+        { "September", 0 },
+        { "October", 0 },
+        { "November", 0 },
+        { "December", 0 }
+    };
 
     //Read file
     string[] lines = File.ReadAllLines(filename);
@@ -1234,7 +1271,7 @@ void CalculateYear(string filename)
             }
         }
 
-        //Display orders
+        //Retrieve order objects
         Order order = new Order(Convert.ToInt32(i[0]), Convert.ToDateTime(i[2]));
         order_list.Add(order);
 
@@ -1246,17 +1283,11 @@ void CalculateYear(string filename)
         }
     }
 
-    Console.WriteLine("All orders in" + year + ": " + fulfilled_list.Count);
-    foreach (Order o in order_list)
-    {
-        Console.WriteLine(o);
-    }
-
     //Create table for display
     Table table = new Table();
 
     //Add table title
-    table.Title($"\n\n\nBreakdown for {year}");
+    table.Title($"Breakdown for {year}");
 
     //Add columns
     table.AddColumn("Month/Total");

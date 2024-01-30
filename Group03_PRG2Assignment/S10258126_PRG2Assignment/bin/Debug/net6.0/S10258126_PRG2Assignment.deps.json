@@ -8,11 +8,20 @@
     ".NETCoreApp,Version=v6.0": {
       "S10258126_PRG2Assignment/1.0.0": {
         "dependencies": {
+          "Kurukuru": "1.4.2",
           "Spectre.Console": "0.48.0",
           "Spectre.Console.Cli": "0.48.0"
         },
         "runtime": {
           "S10258126_PRG2Assignment.dll": {}
+        }
+      },
+      "Kurukuru/1.4.2": {
+        "runtime": {
+          "lib/net5.0/Kurukuru.dll": {
+            "assemblyVersion": "1.4.2.0",
+            "fileVersion": "1.4.2.0"
+          }
         }
       },
       "Spectre.Console/0.48.0": {
@@ -56,6 +65,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Kurukuru/1.4.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OpfXP8piJFx8hEG+z2Gw2/VWvj96RkzDvtjfAxJnZRuREDasW8Is9kjwm/E8oXmyq6TjSStBzkSwdAJLlqG3Dg==",
+      "path": "kurukuru/1.4.2",
+      "hashPath": "kurukuru.1.4.2.nupkg.sha512"
     },
     "Spectre.Console/0.48.0": {
       "type": "package",
