@@ -1,10 +1,10 @@
 ﻿//==========================================================
-// Features: 1, 3, 4
+// Features: 1, 3, 4, Advanced B
 // Student Number : S10258126
 // Student Name : An Yong Shyan
 // Partner Name : Jake Chan Man Lock
 //==========================================================
-// Features: 2, 5, 6
+// Features: 2, 5, 6, Advanced A
 // Student Number : S10255965
 // Student Name : Jake Chan Man Lock
 // Partner Name : An Yong Shyan
@@ -13,17 +13,20 @@
 using Spectre.Console;
 using S10258126_PRG2Assignment;
 
+//Access csv files
 string customerFile = "customers.csv";
 string orderFile = "orders.csv";
 string flavoursFile = "flavours.csv";
 string optionsFile = "options.csv";
 string toppingsFile = "toppings.csv";
-Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>(); //Create a Dictionary to store Customer Objects
+
+//Create Dictionary and queues
+Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>();
 Queue<Order> gold_queue = new Queue<Order>();
 Queue<Order> regular_queue = new Queue<Order>();
 int orderID = 0;
 
-//Display Menu Method
+//Display Menu Method - General use
 int DisplayMenu()
 {
     string choice = AnsiConsole.Prompt(
@@ -44,7 +47,7 @@ int DisplayMenu()
     return choice[2] - '0';
 }
 
-//Listing Customers - Feature 4
+//Menu for list of Customers - Feature 4, 5, 6 use
 int ListCustomers(Dictionary<int, Customer> customerDict)
 {
     // Format customer information for display
@@ -402,9 +405,6 @@ void CreateCustomerOrder(Dictionary<int, Customer> customerDict)
         if (customerDict[customer_index].Rewards.Tier == "Gold") gold_queue.Enqueue(new_order);
         else regular_queue.Enqueue(new_order);
 
-        //Append to orders csv
-
-
         //Indicate that order has been made successfully
         Console.WriteLine("Order successfully made.\n");
     }
@@ -481,8 +481,6 @@ int Flavour_Menu()
     int flavourIndex = int.Parse(flavour_menu.Substring(2, 1)) + 1;
     return flavourIndex;
 }
-
-
 
 //Flavour Method
 List<Flavour> Flavours(int scoops)
@@ -980,8 +978,8 @@ void ModifyOrderDetails(Dictionary<int, Customer> customerDict)
 }
 
 //Advanced Features
-//Feature 7
 
+//Feature 7
 //Process Order Checkout Menu
 string ProcessOrderMenu()
 {
