@@ -981,10 +981,23 @@ void CalculateYear(string filename)
     //Call Menu
     string year = YearMenu();
 
-    //Make a new list for fulfilled orders and index list and price
+    //Make a new list for fulfilled orders and montly price dictionary
     List<string> fulfilled_list =  new List<string>();
-    List<int> index_list = new List<int>();
-    List<int> price_list = new List<int>();
+    Dictionary<string, double> monthly = new Dictionary<string, double>(12);
+
+    //Add key months to dictionary
+    monthly.Add("January", 0);
+    monthly.Add("February", 0);
+    monthly.Add("March", 0);
+    monthly.Add("April", 0);
+    monthly.Add("May", 0);
+    monthly.Add("June", 0);
+    monthly.Add("July", 0);
+    monthly.Add("August", 0);
+    monthly.Add("September", 0);
+    monthly.Add("October", 0);
+    monthly.Add("November", 0);
+    monthly.Add("December", 0);
 
     //Read file
     string[] lines = File.ReadAllLines(filename);
@@ -1005,7 +1018,7 @@ void CalculateYear(string filename)
     foreach (string t in toppings_lines)
     {
         string[] i = t.Split(',');
-        flavourDict.Add(i[0], i[1]);
+        toppingDict.Add(i[0], i[1]);
     }
 
     for (int i = 1; i < lines.Length; i++)
@@ -1019,68 +1032,76 @@ void CalculateYear(string filename)
         }
     }
 
-    //Loop through fulfilled orders to add up total price
-    int price = 0;
+    //Loop through fulfilled orders to add to monthly price
     List<Order> order_list = new List<Order>();
     foreach (string q in fulfilled_list)
     {
+        double price = 0;
+
         string[] i = q.Split(',');
         string[] iceCream = new string[] {i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13], i[14] };
-        foreach (string a in iceCream)
+
+        //Adds price of each flavour
+        if (flavourDict.ContainsKey(iceCream[4]))
         {
-            //Adds price of each flavour
-            if (flavourDict.ContainsKey(iceCream[4]))
-            {
-                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[4]]); // Access the value for the specific key
-                price += flavourPrice;
-            }
-            if (flavourDict.ContainsKey(iceCream[5]))
-            {
-                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[5]]);
-                price += flavourPrice;
-            }
-            if (flavourDict.ContainsKey(iceCream[6]))
-            {
-                int flavourPrice = Convert.ToInt32(flavourDict[iceCream[6]]);
-                price += flavourPrice;
-            }
+            double flavourPrice = double.Parse(flavourDict[iceCream[4]]); // Access the value for the specific key
+            price += flavourPrice;
+        }
+        if (flavourDict.ContainsKey(iceCream[5]))
+        {
+            double flavourPrice = double.Parse(flavourDict[iceCream[5]]);
+            price += flavourPrice;
+        }
+        if (flavourDict.ContainsKey(iceCream[6]))
+        {
+            double flavourPrice = double.Parse(flavourDict[iceCream[6]]);
+            price += flavourPrice;
+        }
 
-            //Adds price of each topping
-            if (toppingDict.ContainsKey(iceCream[7]))
-            {
-                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[7]]);
-                price += toppingPrice;
-            }
-            if (toppingDict.ContainsKey(iceCream[8]))
-            {
-                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[8]]);
-                price += toppingPrice;
-            }
-            if (toppingDict.ContainsKey(iceCream[9]))
-            {
-                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[9]]);
-                price += toppingPrice;
-            }
-            if (toppingDict.ContainsKey(iceCream[10]))
-            {
-                int toppingPrice = Convert.ToInt32(flavourDict[iceCream[10]]);
-                price += toppingPrice;
-            }
+        //Adds price of each topping
+        if (toppingDict.ContainsKey(iceCream[7]))
+        {
+            double toppingPrice = double.Parse(toppingDict[iceCream[7]]);
+            price += toppingPrice;
+        }
+        if (toppingDict.ContainsKey(iceCream[8]))
+        {
+            double toppingPrice = double.Parse(toppingDict[iceCream[8]]);
+            price += toppingPrice;
+        }
+        if (toppingDict.ContainsKey(iceCream[9]))
+        {
+            double toppingPrice = double.Parse(toppingDict[iceCream[9]]);
+            price += toppingPrice;
+        }
+        if (toppingDict.ContainsKey(iceCream[10]))
+        {
+            double toppingPrice = double.Parse(toppingDict[iceCream[10]]);
+            price += toppingPrice;
+        }
 
-            //Adds price of each option
-            foreach (string o in options_lines)
+        //Adds price of each option
+        foreach (string o in options_lines)
+        {
+            string options = $"{iceCream[0]},{iceCream[1]},{iceCream[2]},{iceCream[3]}";
+            if (o.Contains(options))
             {
-                string options = $"{iceCream[0]},{iceCream[1]},{iceCream[2]},{iceCream[3]}";
-                if (options_lines.Contains(options))
-                {
-                    string[] oindex = options.Split(',');
-                    price += int.Parse(oindex[4]);
-                
-                }
+                string[] oindex = o.Split(',');
+                price += double.Parse(oindex[4]);
+                break;
             }
         }
+
+        //Display orders
         Order order = new Order(Convert.ToInt32(i[0]), Convert.ToDateTime(i[2]));
         order_list.Add(order);
+
+        //Add to monthly dictionary
+        string month = Convert.ToDateTime(i[3]).ToString("MMMM");
+        if (monthly.ContainsKey(month))
+        {
+            monthly[month] += price;
+        }
     }
 
     Console.WriteLine("All orders in" + year + ": " + fulfilled_list.Count);
@@ -1089,7 +1110,27 @@ void CalculateYear(string filename)
         Console.WriteLine(o);
     }
 
-    Console.WriteLine($"\nTotal Price for {year}:  ${price}");
+    //Create table for display
+    Table table = new Table();
+
+    //Add table title
+    table.Title($"\n\n\nBreakdown for {year}");
+
+    //Add columns
+    table.AddColumn("Month/Total");
+    table.AddColumn("Price");
+
+    //Add rows
+    foreach (KeyValuePair<string, double> m in monthly)
+    {
+        string formattedValue = m.Value <= 0 ? "$0" : $"${m.Value:F2}";
+        table.AddRow(m.Key, formattedValue);
+    }
+
+    //Add total price row
+    table.AddRow($"\nTotal Price", $"\n${monthly.Select(m => m.Value).Sum():F2}");
+    AnsiConsole.Write(table);
+    Console.WriteLine();
 }
 
 //Main Program
