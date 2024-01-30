@@ -54,4 +54,3 @@ C:\Ngee Ann\Semester 2\Programming 2\Assignment1.2\Group03_PRG2Assignment\S10258
 C:\Ngee Ann\Semester 2\Programming 2\Assignment1.2\Group03_PRG2Assignment\S10258126_PRG2Assignment\bin\Debug\net6.0\sv\Spectre.Console.Cli.resources.dll
 C:\Ngee Ann\Semester 2\Programming 2\Assignment1.2\Group03_PRG2Assignment\S10258126_PRG2Assignment\obj\Debug\net6.0\S10258126_PRG2Assignment.csproj.AssemblyReference.cache
 C:\Ngee Ann\Semester 2\Programming 2\Assignment1.2\Group03_PRG2Assignment\S10258126_PRG2Assignment\obj\Debug\net6.0\S10258126_PRG2Assignment.csproj.CopyComplete
-C:\Ngee Ann\Semester 2\Programming 2\Assignment1.2\Group03_PRG2Assignment\S10258126_PRG2Assignment\bin\Debug\net6.0\Kurukuru.dll

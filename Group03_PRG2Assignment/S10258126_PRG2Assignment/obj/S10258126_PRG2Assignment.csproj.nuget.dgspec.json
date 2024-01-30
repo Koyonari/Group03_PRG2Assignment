@@ -44,10 +44,6 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "Kurukuru": {
-              "target": "Package",
-              "version": "[1.4.2, )"
-            },
             "Spectre.Console": {
               "target": "Package",
               "version": "[0.48.0, )"
