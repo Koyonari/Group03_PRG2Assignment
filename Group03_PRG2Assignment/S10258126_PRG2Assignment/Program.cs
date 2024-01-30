@@ -1,14 +1,16 @@
-﻿//==========================================================
+﻿//===================================================================================================
 // Features: 1, 3, 4, Advanced B
 // Student Number : S10258126
 // Student Name : An Yong Shyan
 // Partner Name : Jake Chan Man Lock
-//==========================================================
+//===================================================================================================
 // Features: 2, 5, 6, Advanced A
 // Student Number : S10255965
 // Student Name : Jake Chan Man Lock
 // Partner Name : An Yong Shyan
-//==========================================================
+//===================================================================================================
+//Advanced C: Implemented a simple ui for the user to interact with the program - Spectre.Console
+//===================================================================================================
 
 using Spectre.Console;
 using S10258126_PRG2Assignment;
@@ -25,6 +27,19 @@ Dictionary<int, Customer> customerDict = new Dictionary<int, Customer>();
 Queue<Order> gold_queue = new Queue<Order>();
 Queue<Order> regular_queue = new Queue<Order>();
 int orderID = 0;
+
+//Welcome Message
+AnsiConsole.Write(
+    new FigletText("Welcome to")
+        .LeftJustified());
+AnsiConsole.Write(
+    new FigletText("I.C.Treats")
+        .Centered()
+        .Color(Color.Aqua));
+AnsiConsole.Write(
+    new FigletText("------------")
+        .LeftJustified()
+        .Color(Color.Teal));
 
 //Display Menu Method - General use
 int DisplayMenu()
