@@ -32,20 +32,10 @@ namespace S10258126_PRG2Assignment
             {
                 if (Points >= 100) Tier = "Gold";
             }
-            //Console.WriteLine(add_points);
-            //Console.WriteLine(Tier);
         }
 
-        public void RedeemPoints(int use_points)//Requires advanced
+        public void RedeemPoints(int use_points)
         {
-            /*if (Points - use_points >= 0 && (Tier == "Silver" || Tier == "Gold"))
-            {
-                double cost_offset = use_points * 0.02;
-                if (Tier == "Gold")
-                {
-                    int i = 0;
-                }
-            }*/
             Points -= use_points;
         }
 

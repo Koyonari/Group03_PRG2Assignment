@@ -9,10 +9,10 @@
 // Student Name : Jake Chan Man Lock
 // Partner Name : An Yong Shyan
 //===================================================================================================
-//Advanced C: Implemented a simple ui for the user to interact with the program - Spectre.Console
+//Advanced C: Implemented a simple UI for the user to interact with the program - Spectre.Console
 //===================================================================================================
 
-using Spectre.Console;
+using Spectre.Console; //Advanced C - UI
 using S10258126_PRG2Assignment;
 
 //Access csv files
@@ -55,7 +55,7 @@ int DisplayMenu()
             "[[4]] Create customer order",
             "[[5]] Display order details",
             "[[6]] Modify order details",
-            "[[7]] Order Checkout",
+            "[[7]] Order checkout",
             "[[8]] Order price breakdown",
             "[[0]] Exit"
     }));
@@ -96,6 +96,7 @@ int ListCustomers(Dictionary<int, Customer> customerDict)
     return memberId;
 }
 
+//Extract data from customers.csv
 void ExtractCustomer(string filename) //Reads File, Creates objects
 {
     string[] customer_file = File.ReadAllLines(filename); //Array
@@ -113,6 +114,7 @@ void ExtractCustomer(string filename) //Reads File, Creates objects
     }
 }
 
+//Extract data from orders.csv
 void ExtractOrder(string filename, Dictionary<int, Customer> customerDict)
 {
     string[] order_file = File.ReadAllLines(filename); //Array
@@ -481,7 +483,7 @@ int Flavour_Menu()
 {
     string flavour_menu = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-        .Title("--Available Ice Cream Flavours--")  // Removed "Flavours" from the title
+        .Title("--Available Ice Cream Flavours--")
         .PageSize(6)
         .AddChoices(new[] {
             "[[1]] Vanilla",
@@ -1231,51 +1233,31 @@ void CalculateYear(string filename)
         double price = 0;
 
         string[] i = q.Split(',');
-        string[] iceCream = new string[] {i[4], i[5], i[6], i[7], i[8], i[9], i[10], i[11], i[12], i[13], i[14] };
 
         //Adds price of each flavour
-        if (flavourDict.ContainsKey(iceCream[4]))
+        for (int p = 8; p < 11; p++)
         {
-            double flavourPrice = double.Parse(flavourDict[iceCream[4]]); // Access the value for the specific key
-            price += flavourPrice;
-        }
-        if (flavourDict.ContainsKey(iceCream[5]))
-        {
-            double flavourPrice = double.Parse(flavourDict[iceCream[5]]);
-            price += flavourPrice;
-        }
-        if (flavourDict.ContainsKey(iceCream[6]))
-        {
-            double flavourPrice = double.Parse(flavourDict[iceCream[6]]);
-            price += flavourPrice;
+            if (flavourDict.ContainsKey(i[p]))
+            {
+                double flavourPrice = double.Parse(flavourDict[i[p]]); // Access the value for the specific key
+                price += flavourPrice;
+            }
         }
 
         //Adds price of each topping
-        if (toppingDict.ContainsKey(iceCream[7]))
+        for (int e = 11; e < 15; e++)
         {
-            double toppingPrice = double.Parse(toppingDict[iceCream[7]]);
-            price += toppingPrice;
-        }
-        if (toppingDict.ContainsKey(iceCream[8]))
-        {
-            double toppingPrice = double.Parse(toppingDict[iceCream[8]]);
-            price += toppingPrice;
-        }
-        if (toppingDict.ContainsKey(iceCream[9]))
-        {
-            double toppingPrice = double.Parse(toppingDict[iceCream[9]]);
-            price += toppingPrice;
-        }
-        if (toppingDict.ContainsKey(iceCream[10]))
-        {
-            double toppingPrice = double.Parse(toppingDict[iceCream[10]]);
-            price += toppingPrice;
+            if (toppingDict.ContainsKey(i[e]))
+            {
+                double toppingPrice = double.Parse(toppingDict[i[e]]);
+                price += toppingPrice;
+            }
         }
 
         //Adds price of each option
         foreach (string o in options_lines)
         {
-            string options = $"{iceCream[0]},{iceCream[1]},{iceCream[2]},{iceCream[3]}";
+            string options = $"{i[4]},{i[5]},{i[6]},{i[7]}";
             if (o.Contains(options))
             {
                 string[] oindex = o.Split(',');

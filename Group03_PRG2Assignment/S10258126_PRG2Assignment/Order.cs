@@ -21,7 +21,7 @@ namespace S10258126_PRG2Assignment
             TimeReceived = input_timeReceived;
         }
 
-        public void ModifyIceCream(int iceCreamPos) //Function Not Used
+        public void ModifyIceCream(int iceCreamPos)
         {
             IceCream modify_IceCream = IceCreamList[iceCreamPos];
         }

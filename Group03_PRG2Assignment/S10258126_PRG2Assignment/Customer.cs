@@ -11,7 +11,7 @@ namespace S10258126_PRG2Assignment
         public string Name { get; set; }
         public int MemberId { get; set; }
         public DateTime Dob { get; set; }
-        public Order CurrentOrder { get; set; } //Not Done
+        public Order CurrentOrder { get; set; }
         public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; } = new PointCard();
 
@@ -24,10 +24,8 @@ namespace S10258126_PRG2Assignment
             Dob = input_dob;
         }
 
-        public Order MakeOrder() //Function not used
+        public Order MakeOrder() 
         {
-            //CurrentOrder = new Order(Convert.ToInt32(DateTime.Now.ToString("HHss")),DateTime.Now);
-            //OrderHistory.Add(CurrentOrder);
             CurrentOrder = new Order();
             return CurrentOrder;
         }
